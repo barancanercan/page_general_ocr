@@ -64,47 +64,54 @@ def detect_page_number(text):
 
 
 # ===============================
-# Paragraf Filtreleme
+# Paragraf Sınıflandırma (LLM)
 # ===============================
 
-NON_PARAGRAPH_PATTERNS = [
-    r'^(İÇİNDEKİLER|ÖNSÖZ|KAYNAKÇA|KISALTMALAR|EK\s*\d*)$',
-    r'^(BÖLÜM|KISIM|FASIL)\s*[\dIVXLC]+',
-    r'^ISBN[\s:\-]*[\dX\-]+',
-    r'^\d{4}$',  # yıl
-    r'^(Sayfa|Page)\s*\d+',
-    r'^\.\.\.\s*\d+$',  # içindekiler satırı
-]
+CLASSIFY_PROMPT = """Aşağıdaki metni sınıflandır. Sadece şu etiketlerden BİRİNİ yaz:
 
-def is_valid_paragraph(text):
-    """Gerçek paragraf mı kontrol et (en az 2 cümle, anlatı içermeli)."""
-    text = text.strip()
-    if len(text) < 50:
-        return False
+REAL_PARAGRAPH - Olay, bilgi veya açıklama içeren gerçek paragraf
+HEADING - Başlık veya bölüm adı
+METADATA - Yayınevi, ISBN, tarih, yazar bilgisi
+JUNK - İçindekiler, sayfa numarası, anlamsız metin
 
-    # Non-paragraph pattern kontrolü
-    for pattern in NON_PARAGRAPH_PATTERNS:
-        if re.search(pattern, text, re.IGNORECASE):
-            return False
+Sadece etiketi yaz, başka bir şey yazma.
 
-    # Tamamen büyük harf = başlık
-    if text.isupper() and len(text) < 100:
-        return False
+Metin:
+{text}"""
 
-    # En az 2 cümle (nokta sayısı)
-    sentence_count = len(re.findall(r'[.!?]', text))
-    if sentence_count < 2:
-        return False
 
-    return True
+def classify_text(text):
+    """LLM ile metin sınıflandır."""
+    if len(text.strip()) < 20:
+        return "JUNK"
+
+    payload = {
+        "model": LLM_MODEL,
+        "messages": [{"role": "user", "content": CLASSIFY_PROMPT.format(text=text)}],
+        "stream": False,
+        "options": {"temperature": 0}
+    }
+    try:
+        r = requests.post(OLLAMA_CHAT, json=payload, timeout=60)
+        r.raise_for_status()
+        result = r.json()["message"]["content"].strip().upper()
+        if "REAL_PARAGRAPH" in result:
+            return "REAL_PARAGRAPH"
+        elif "HEADING" in result:
+            return "HEADING"
+        elif "METADATA" in result:
+            return "METADATA"
+        return "JUNK"
+    except:
+        return "JUNK"
 
 
 def split_paragraphs(text):
-    """Metni paragraflara böl ve filtrele."""
+    """Metni paragraflara böl, LLM ile sınıflandır, sadece REAL_PARAGRAPH döndür."""
     blocks = []
     for p in text.split("\n\n"):
-        p = ' '.join(p.split())  # normalize whitespace
-        if is_valid_paragraph(p):
+        p = ' '.join(p.split())
+        if len(p) > 30 and classify_text(p) == "REAL_PARAGRAPH":
             blocks.append(p)
     return blocks
 
