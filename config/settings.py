@@ -11,7 +11,7 @@ EMBED_MODEL = "nomic-embed-text"
 # OCR
 OCR_LANG = "tur+eng"
 OCR_DPI = 200
-MAX_PAGES = 10
+MAX_PAGES = 20
 
 # Paths
 DATA_DIR = "data"
