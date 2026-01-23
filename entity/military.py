@@ -1,35 +1,75 @@
+import re
 import requests
 from config.settings import OLLAMA_CHAT, LLM_MODEL
 
-DIVISION_PROMPT = """Metindeki askeri birlikleri bul ve normalize et.
+# Askeri birlik regex pattern'leri (pre-filter)
+UNIT_PATTERNS = [
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Tümen|Tümeni|Tümenii)',
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Kolordu|Kolordusu)',
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Tugay|Tugayı)',
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Alay|Alayı)',
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Fırka|Fırkası)',
+    r'\d+\s*(?:nci|ncı|ncu|üncü|inci)\s+(?:Tümen|Kolordu|Tugay|Alay|Fırka)',
+    r'(?:Birinci|İkinci|Üçüncü|Dördüncü|Beşinci|Altıncı|Yedinci|Sekizinci|Dokuzuncu|Onuncu)\s+(?:Tümen|Kolordu|Fırka)',
+]
 
-Birlik türleri: Tümen, Alay, Tugay, Kolordu, Fırka
+UNIT_REGEX = re.compile('|'.join(UNIT_PATTERNS), re.IGNORECASE)
 
-Kurallar:
+
+def has_military_units(text):
+    """Metinde askeri birlik var mı kontrol et (hızlı regex)."""
+    return bool(UNIT_REGEX.search(text))
+
+
+NORMALIZE_PROMPT = """Aşağıdaki metindeki askeri birlikleri normalize et.
+
+KURALLAR:
+- Sadece METİNDE AÇIKÇA GEÇEN birlikleri yaz
 - OCR hatalarını düzelt (Tümenii → Tümeni)
-- Yazıyla yazılmış sayıları rakama çevir (Dördüncü → 4.)
-- "nci/ncu/ncı" eklerini kaldır (9 ncu → 9.)
+- Sayı + birim formatı kullan (24. Piyade Tümeni)
 - Fırka → Tümen olarak normalize et
+- Her birliği yeni satırda yaz
+- Metinde birlik YOKSA sadece BOŞ yaz
 
-Format: Her birliği yeni satırda yaz. Birlik yoksa BOŞ yaz.
+YASAK:
+- Metinde olmayan birlik ekleme
+- Açıklama veya yorum yazma
 
 Metin:
 {text}"""
 
 
 def extract_divisions(text):
+    """Regex pre-filter + LLM normalize ile askeri birlik çıkar."""
+    # Pre-filter: regex ile birlik var mı kontrol et
+    if not has_military_units(text):
+        return []
+
     payload = {
         "model": LLM_MODEL,
-        "messages": [{"role": "user", "content": DIVISION_PROMPT.format(text=text)}],
+        "messages": [{"role": "user", "content": NORMALIZE_PROMPT.format(text=text)}],
         "stream": False,
         "options": {"temperature": 0}
     }
+
     try:
         r = requests.post(OLLAMA_CHAT, json=payload, timeout=60)
         r.raise_for_status()
         result = r.json()["message"]["content"].strip()
-        if "BOŞ" in result.upper() or len(result) < 3:
+
+        # BOŞ veya çok kısa yanıt
+        if "BOŞ" in result.upper() or len(result) < 5:
             return []
-        return [d.strip() for d in result.split('\n') if d.strip()]
+
+        # Satırlara böl ve filtrele
+        divisions = []
+        for line in result.split('\n'):
+            line = line.strip()
+            # Sadece birlik formatına uyan satırları al
+            if re.search(r'\d+\.?\s*(?:Piyade\s+)?(?:Tümen|Kolordu|Tugay|Alay)', line, re.IGNORECASE):
+                divisions.append(line)
+
+        return divisions
+
     except Exception:
         return []
