@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import requests
 import pytesseract
@@ -43,6 +44,24 @@ def ocr_page(img):
     avg_conf = sum(confidences) / len(confidences) / 100.0 if confidences else 0.0
 
     return text, round(avg_conf, 3)
+
+
+# ===============================
+# Sayfa Numarası Tespiti
+# ===============================
+
+def detect_page_number(text):
+    """Basılı sayfa numarasını tespit et. Bulunamazsa 'unknown' döndür."""
+    lines = text.strip().split('\n')
+    candidates = lines[:3] + lines[-3:] if len(lines) > 6 else lines
+
+    for line in candidates:
+        line = line.strip()
+        if re.fullmatch(r'\d{1,4}', line):
+            num = int(line)
+            if 1 <= num <= 1500 and not (1800 <= num <= 2100):
+                return num
+    return "unknown"
 
 
 # ===============================
@@ -108,6 +127,7 @@ def process_pdf(pdf_path):
     for page_idx, img in enumerate(images):
         print(f"Sayfa {page_idx+1}/{len(images)} işleniyor...")
         raw_text, page_confidence = ocr_page(img)
+        printed_page = detect_page_number(raw_text)
 
         paragraphs = split_paragraphs(raw_text)
 
@@ -121,7 +141,7 @@ def process_pdf(pdf_path):
                 "document": clean,
                 "metadata": {
                     "source_pdf": PDF_NAME,
-                    "source_page": page_idx + 1,
+                    "source_page": printed_page,
                     "paragraph_index": i + 1,
                     "ocr_confidence": page_confidence
                 }
