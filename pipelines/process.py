@@ -8,6 +8,12 @@ from ocr.extractor import pdf_to_images, ocr_page, detect_page_number
 from paragraph.classifier import split_paragraphs
 from entity.military import extract_divisions
 from embedding.ollama import clean_text, embed
+from scorer.confidence import (
+    calc_ocr_confidence,
+    calc_para_quality,
+    calc_entity_certainty,
+    calc_final_confidence
+)
 
 
 def process_pdf(pdf_path: str) -> List[Paragraph]:
@@ -23,10 +29,10 @@ def process_pdf(pdf_path: str) -> List[Paragraph]:
         cache_key = f"{book_id}_page_{page_idx}"
         cached = get_cache("ocr", cache_key)
         if cached:
-            raw_text, confidence = cached["text"], cached["confidence"]
+            raw_text, raw_ocr_conf = cached["text"], cached["confidence"]
         else:
-            raw_text, confidence = ocr_page(img)
-            set_cache("ocr", cache_key, {"text": raw_text, "confidence": confidence})
+            raw_text, raw_ocr_conf = ocr_page(img)
+            set_cache("ocr", cache_key, {"text": raw_text, "confidence": raw_ocr_conf})
 
         source_page = detect_page_number(raw_text)
         blocks = split_paragraphs(raw_text)
@@ -44,6 +50,12 @@ def process_pdf(pdf_path: str) -> List[Paragraph]:
                 vec = embed(clean)
                 set_cache("embedding", clean[:100], vec)
 
+            # Confidence hesaplama
+            ocr_conf = calc_ocr_confidence(raw_ocr_conf)
+            para_qual = calc_para_quality(clean)
+            entity_cert = calc_entity_certainty(divisions, clean)
+            final_conf = calc_final_confidence(ocr_conf, para_qual, entity_cert)
+
             para = Paragraph(
                 book_id=book_id,
                 paragraph_index=global_idx,
@@ -51,7 +63,10 @@ def process_pdf(pdf_path: str) -> List[Paragraph]:
                 embedding=vec,
                 source_page=source_page,
                 division=divisions,
-                confidence=confidence
+                ocr_confidence=ocr_conf,
+                para_quality=para_qual,
+                entity_certainty=entity_cert,
+                confidence=final_conf
             )
             paragraphs.append(para)
 

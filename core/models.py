@@ -16,6 +16,9 @@ class Paragraph:
     embedding: List[float]
     source_page: Union[int, str]
     division: List[str] = field(default_factory=list)
+    ocr_confidence: float = 0.0
+    para_quality: float = 0.0
+    entity_certainty: float = 0.0
     confidence: float = 0.0
 
     @property
@@ -32,6 +35,9 @@ class Paragraph:
                 "paragraph_index": self.paragraph_index,
                 "source_page": self.source_page,
                 "division": self.division,
-                "confidence": self.confidence
+                "confidence": self.confidence,
+                "ocr_confidence": self.ocr_confidence,
+                "para_quality": self.para_quality,
+                "entity_certainty": self.entity_certainty
             }
         }
