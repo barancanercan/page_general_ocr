@@ -169,7 +169,7 @@ def embed(text):
 # ===============================
 
 def process_pdf(pdf_path):
-    pdf_name = os.path.basename(pdf_path)
+    book_id = os.path.basename(pdf_path).rsplit('.', 1)[0]
     images = pdf_to_images(pdf_path, max_pages=10)
     all_rows = []
     global_para_idx = 0
@@ -187,14 +187,15 @@ def process_pdf(pdf_path):
             vec = embed(clean)
 
             row = {
-                "id": f"{pdf_name}_p{printed_page}_parag_{global_para_idx}",
+                "id": f"parag_{global_para_idx}",
                 "embedding": vec,
                 "document": clean,
                 "metadata": {
-                    "source_pdf": pdf_name,
+                    "division": [],
+                    "confidence": page_confidence,
                     "source_page": printed_page,
-                    "paragraph_index": global_para_idx,
-                    "ocr_confidence": page_confidence
+                    "book_id": book_id,
+                    "paragraph_index": global_para_idx
                 }
             }
             all_rows.append(row)
