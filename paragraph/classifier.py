@@ -1,47 +1,54 @@
-import requests
-from config.settings import OLLAMA_CHAT, LLM_MODEL
+import re
 
-CLASSIFY_PROMPT = """Aşağıdaki metni sınıflandır. Sadece şu etiketlerden BİRİNİ yaz:
+# JUNK patternleri (regex ile hızlı filtreleme)
+JUNK_PATTERNS = [
+    r'^[—\-–\s]*\d{1,4}[—\-–\s]*$',          # sayfa numarası
+    r'^[\d\.\s]+$',                            # sadece sayı
+    r'^\[?\d+\]$',                             # dipnot referansı
+    r'^(İÇİNDEKİLER|ÖNSÖZ|KAYNAKÇA|INDEX)$',  # bölüm başlıkları
+]
 
-REAL_PARAGRAPH - Olay, bilgi veya açıklama içeren gerçek paragraf
-HEADING - Başlık veya bölüm adı
-METADATA - Yayınevi, ISBN, tarih, yazar bilgisi
-JUNK - İçindekiler, sayfa numarası, anlamsız metin
-
-Sadece etiketi yaz, başka bir şey yazma.
-
-Metin:
-{text}"""
+# HEADING patternleri
+HEADING_PATTERNS = [
+    r'^[A-ZÇĞİÖŞÜ\s]{10,}$',                  # tamamen büyük harf
+    r'^(BÖLÜM|KISIM|FASIL)\s*[\dIVXLC]+',     # bölüm numarası
+    r'^[IVX]+\.\s+[A-ZÇĞİÖŞÜ]',              # Romen rakamı başlık
+]
 
 
 def classify_text(text):
-    if len(text.strip()) < 20:
+    """Hızlı regex tabanlı sınıflandırma."""
+    text = text.strip()
+
+    if len(text) < 30:
         return "JUNK"
-    payload = {
-        "model": LLM_MODEL,
-        "messages": [{"role": "user", "content": CLASSIFY_PROMPT.format(text=text)}],
-        "stream": False,
-        "options": {"temperature": 0}
-    }
-    try:
-        r = requests.post(OLLAMA_CHAT, json=payload, timeout=60)
-        r.raise_for_status()
-        result = r.json()["message"]["content"].strip().upper()
-        if "REAL_PARAGRAPH" in result:
-            return "REAL_PARAGRAPH"
-        elif "HEADING" in result:
+
+    # JUNK kontrolü
+    for pattern in JUNK_PATTERNS:
+        if re.match(pattern, text, re.IGNORECASE):
+            return "JUNK"
+
+    # HEADING kontrolü
+    for pattern in HEADING_PATTERNS:
+        if re.match(pattern, text):
             return "HEADING"
-        elif "METADATA" in result:
-            return "METADATA"
-        return "JUNK"
-    except Exception:
-        return "JUNK"
+
+    # En az bir cümle sonu işareti olmalı
+    if not re.search(r'[.!?]', text):
+        return "HEADING"
+
+    return "REAL_PARAGRAPH"
 
 
 def split_paragraphs(text):
+    """Metni paragraflara böl ve filtrele."""
+    # Tek \n'leri de paragraf ayırıcı olarak kullan (eğer ardından boş satır varsa)
+    text = re.sub(r'\n{2,}', '\n\n', text)
     blocks = []
+
     for p in text.split("\n\n"):
         p = ' '.join(p.split())
-        if len(p) > 30 and classify_text(p) == "REAL_PARAGRAPH":
+        if len(p) > 50 and classify_text(p) == "REAL_PARAGRAPH":
             blocks.append(p)
+
     return blocks
