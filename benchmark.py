@@ -65,14 +65,47 @@ def detect_page_number(text):
 
 
 # ===============================
-# Paragraf bölücü
+# Paragraf Filtreleme
 # ===============================
 
+NON_PARAGRAPH_PATTERNS = [
+    r'^(İÇİNDEKİLER|ÖNSÖZ|KAYNAKÇA|KISALTMALAR|EK\s*\d*)$',
+    r'^(BÖLÜM|KISIM|FASIL)\s*[\dIVXLC]+',
+    r'^ISBN[\s:\-]*[\dX\-]+',
+    r'^\d{4}$',  # yıl
+    r'^(Sayfa|Page)\s*\d+',
+    r'^\.\.\.\s*\d+$',  # içindekiler satırı
+]
+
+def is_valid_paragraph(text):
+    """Gerçek paragraf mı kontrol et (en az 2 cümle, anlatı içermeli)."""
+    text = text.strip()
+    if len(text) < 50:
+        return False
+
+    # Non-paragraph pattern kontrolü
+    for pattern in NON_PARAGRAPH_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            return False
+
+    # Tamamen büyük harf = başlık
+    if text.isupper() and len(text) < 100:
+        return False
+
+    # En az 2 cümle (nokta sayısı)
+    sentence_count = len(re.findall(r'[.!?]', text))
+    if sentence_count < 2:
+        return False
+
+    return True
+
+
 def split_paragraphs(text):
+    """Metni paragraflara böl ve filtrele."""
     blocks = []
     for p in text.split("\n\n"):
-        p = p.strip()
-        if len(p) > 30:
+        p = ' '.join(p.split())  # normalize whitespace
+        if is_valid_paragraph(p):
             blocks.append(p)
     return blocks
 
