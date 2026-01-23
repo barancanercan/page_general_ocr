@@ -117,6 +117,50 @@ def split_paragraphs(text):
 
 
 # ===============================
+# Askeri Birlik Çıkarımı (LLM)
+# ===============================
+
+DIVISION_PROMPT = """Metindeki askeri birlikleri bul ve normalize et.
+
+Birlik türleri: Tümen, Alay, Tugay, Kolordu, Fırka
+
+Kurallar:
+- OCR hatalarını düzelt (Tümenii → Tümeni)
+- Yazıyla yazılmış sayıları rakama çevir (Dördüncü → 4.)
+- "nci/ncu/ncı" eklerini kaldır (9 ncu → 9.)
+- Fırka → Tümen olarak normalize et
+
+Format: Her birliği yeni satırda yaz. Birlik yoksa BOŞ yaz.
+
+Örnek çıktı:
+24. Piyade Tümeni
+9. Piyade Tümeni
+
+Metin:
+{text}"""
+
+
+def extract_divisions(text):
+    """LLM ile askeri birlikleri çıkar ve normalize et."""
+    payload = {
+        "model": LLM_MODEL,
+        "messages": [{"role": "user", "content": DIVISION_PROMPT.format(text=text)}],
+        "stream": False,
+        "options": {"temperature": 0}
+    }
+    try:
+        r = requests.post(OLLAMA_CHAT, json=payload, timeout=60)
+        r.raise_for_status()
+        result = r.json()["message"]["content"].strip()
+        if "BOŞ" in result.upper() or len(result) < 3:
+            return []
+        divisions = [d.strip() for d in result.split('\n') if d.strip()]
+        return divisions
+    except Exception:
+        return []
+
+
+# ===============================
 # Ollama → Metin Temizleyici
 # ===============================
 
@@ -191,6 +235,7 @@ def process_pdf(pdf_path):
         for para in paragraphs:
             global_para_idx += 1
             clean = ollama_clean(para)
+            divisions = extract_divisions(clean)
             vec = embed(clean)
 
             row = {
@@ -198,7 +243,7 @@ def process_pdf(pdf_path):
                 "embedding": vec,
                 "document": clean,
                 "metadata": {
-                    "division": [],
+                    "division": divisions,
                     "confidence": page_confidence,
                     "source_page": printed_page,
                     "book_id": book_id,
