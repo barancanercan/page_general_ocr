@@ -38,8 +38,13 @@ def process_pdf(pdf_path: str) -> List[Paragraph]:
         blocks = split_paragraphs(raw_text)
 
         for block in blocks:
-            global_idx += 1
             clean = clean_text(block)
+
+            # Final filtre: temizlenmiş metin 200+ karakter olmalı
+            if len(clean) < 200:
+                continue
+
+            global_idx += 1
             divisions = extract_divisions(clean)
 
             # Embedding with cache
