@@ -1,10 +1,11 @@
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from typing import List, Union
 
 
-def generate_id(book_id: str, paragraph_index: int) -> str:
-    """Generate canonical ID: bookid_p0005"""
-    return f"{book_id}_p{paragraph_index:04d}"
+def generate_id(book_id: str, source_page: Union[int, str], paragraph_index: int) -> str:
+    """Generate canonical ID: bookid_p<page>_para<index>"""
+    page = source_page if source_page != "unknown" else "x"
+    return f"{book_id}_p{page}_para{paragraph_index:03d}"
 
 
 @dataclass
@@ -19,7 +20,7 @@ class Paragraph:
 
     @property
     def id(self) -> str:
-        return generate_id(self.book_id, self.paragraph_index)
+        return generate_id(self.book_id, self.source_page, self.paragraph_index)
 
     def to_dict(self) -> dict:
         return {
