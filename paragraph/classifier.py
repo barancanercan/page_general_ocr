@@ -40,15 +40,23 @@ def classify_text(text):
     return "REAL_PARAGRAPH"
 
 
+MIN_PARAGRAPH_LENGTH = 200  # rules.md: en az 200 karakter
+
+
 def split_paragraphs(text):
     """Metni paragraflara böl ve filtrele."""
-    # Tek \n'leri de paragraf ayırıcı olarak kullan (eğer ardından boş satır varsa)
     text = re.sub(r'\n{2,}', '\n\n', text)
     blocks = []
 
     for p in text.split("\n\n"):
         p = ' '.join(p.split())
-        if len(p) > 50 and classify_text(p) == "REAL_PARAGRAPH":
+        classification = classify_text(p)
+
+        # REAL_PARAGRAPH ve minimum uzunluk
+        if classification == "REAL_PARAGRAPH" and len(p) >= MIN_PARAGRAPH_LENGTH:
+            blocks.append(p)
+        # 2+ cümle varsa kısa da olsa kabul et
+        elif classification == "REAL_PARAGRAPH" and len(re.findall(r'[.!?]', p)) >= 2:
             blocks.append(p)
 
     return blocks
