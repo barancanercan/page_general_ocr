@@ -17,11 +17,17 @@ HALLUCINATION_PATTERNS = [
     r'^[*\s]*İşte düzeltilmiş metin[:\s]*',
     r'^[*\s]*Düzeltilmiş metin[:\s]*',
     r'^[*\s]*Aşağıda düzeltilmiş metin[:\s]*',
+    r'^[*\s]*Aşağıdaki şekilde[:\s]*',
     r'^[*\s]*Yeni bilgi[:\s]*.*$',
     r'^[*\s]*Not[:\s]*.*$',
     r'^[*\s]*Açıklama[:\s]*.*$',
     r'\*\*Düzeltilmiş Metin:\*\*\s*',
     r'\*\*Eklem.*?\*\*.*$',
+    r'^Mücadele sürecinde OCR hatasını.*$',
+    r'^Eğer bu metnin amacı.*düzeltmek ise.*$',
+    r'^OCR hatasını düzeltmek için.*$',
+    r'^Bu metnin düzeltilmiş hali.*$',
+    r'^Türkçe imla ve noktalama kurallarını uygulayarak.*$',
 ]
 
 
@@ -29,9 +35,13 @@ def remove_hallucinations(text):
     """LLM çıktısındaki hallucination'ları temizle."""
     for pattern in HALLUCINATION_PATTERNS:
         text = re.sub(pattern, '', text, flags=re.IGNORECASE | re.MULTILINE)
+
+    # Cümle başındaki meta ifadeleri temizle
+    text = re.sub(r'^.*?(?:düzeltmek|düzeltilmiş|aşağıda|şekilde)[^.]*[.:]\s*', '', text, flags=re.IGNORECASE)
+
     # Başta/sonda kalan boşluk ve yıldız temizle
-    text = re.sub(r'^[\s\*\-]+', '', text)
-    text = re.sub(r'[\s\*\-]+$', '', text)
+    text = re.sub(r'^[\s\*\-\n]+', '', text)
+    text = re.sub(r'[\s\*\-\n]+$', '', text)
     return text.strip()
 
 
