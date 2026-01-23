@@ -24,17 +24,18 @@ def ocr_page(img):
 
 def detect_page_number(text):
     lines = text.strip().split('\n')
-    # Daha geniş arama: ilk ve son 8 satır
-    candidates = lines[:8] + lines[-8:] if len(lines) > 16 else lines
+    # Daha geniş arama: ilk ve son 10 satır
+    candidates = lines[:10] + lines[-10:] if len(lines) > 20 else lines
 
     patterns = [
-        r'^[—\-–_]\s*(\d{1,4})\s*[—\-–_]$',   # — 1 — veya - 1 -
-        r'^\(\s*(\d{1,4})\s*\)$',               # (1)
-        r'^[\[\{]\s*(\d{1,4})\s*[\]\}]$',       # [1] veya {1}
-        r'^(\d{1,4})\s*[—\-–]$',                # 1 — (sağda tire)
-        r'^[—\-–]\s*(\d{1,4})$',                # — 1 (solda tire)
-        r'^(\d{1,4})$',                          # sadece sayı
-        r'^\s*(\d{1,4})\s*$',                    # boşluklu sayı
+        r'^[—\-–_]\s*(\d{1,4})\s*[—\-–_]$',     # — 1 — veya - 1 -
+        r'^[—\-–_](\d{1,4})[—\-–_]$',           # —14— (boşluksuz)
+        r'^\(\s*(\d{1,4})\s*\)$',                 # (1)
+        r'^[\[\{]\s*(\d{1,4})\s*[\]\}]$',         # [1] veya {1}
+        r'^(\d{1,4})\s*[—\-–]$',                  # 1 — (sağda tire)
+        r'^[—\-–]\s*(\d{1,4})$',                  # — 1 (solda tire)
+        r'^(\d{1,4})$',                            # sadece sayı
+        r'^\s*(\d{1,4})\s*$',                      # boşluklu sayı
     ]
 
     for line in candidates:
@@ -42,6 +43,8 @@ def detect_page_number(text):
         # Çok uzun satırlar sayfa numarası olamaz
         if len(line) > 15:
             continue
+
+        # Önce orijinal satırı dene
         for pattern in patterns:
             match = re.fullmatch(pattern, line)
             if match:
