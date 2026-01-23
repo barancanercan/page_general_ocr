@@ -8,7 +8,6 @@ from PIL import Image
 
 os.environ["CUDA_VISIBLE_DEVICES"] = ""   # GPU tamamen kapalı
 
-PDF_NAME = "istiklal_harbi.pdf"
 OLLAMA_CHAT = "http://localhost:11434/api/chat"
 OLLAMA_EMBED = "http://localhost:11434/api/embeddings"
 LLM_MODEL = "qwen2.5:3b"
@@ -166,36 +165,38 @@ def embed(text):
 
 
 # ===============================
-# PDF → JSON Pipeline
+# PDF → JSONL Pipeline
 # ===============================
 
 def process_pdf(pdf_path):
+    pdf_name = os.path.basename(pdf_path)
     images = pdf_to_images(pdf_path, max_pages=10)
     all_rows = []
+    global_para_idx = 0
 
     for page_idx, img in enumerate(images):
-        print(f"Sayfa {page_idx+1}/{len(images)} işleniyor...")
+        print(f"[{page_idx+1}/{len(images)}] OCR işleniyor...")
         raw_text, page_confidence = ocr_page(img)
         printed_page = detect_page_number(raw_text)
 
         paragraphs = split_paragraphs(raw_text)
 
-        for i, para in enumerate(paragraphs):
+        for para in paragraphs:
+            global_para_idx += 1
             clean = ollama_clean(para)
             vec = embed(clean)
 
             row = {
-                "id": f"{PDF_NAME}_p{page_idx+1}_parag_{i+1}",
+                "id": f"{pdf_name}_p{printed_page}_parag_{global_para_idx}",
                 "embedding": vec,
                 "document": clean,
                 "metadata": {
-                    "source_pdf": PDF_NAME,
+                    "source_pdf": pdf_name,
                     "source_page": printed_page,
-                    "paragraph_index": i + 1,
+                    "paragraph_index": global_para_idx,
                     "ocr_confidence": page_confidence
                 }
             }
-
             all_rows.append(row)
 
     return all_rows
@@ -206,12 +207,18 @@ def process_pdf(pdf_path):
 # ===============================
 
 if __name__ == "__main__":
-    pdf_path = "data/1_Turk_istiklal_harbi_mondros_mutarekesi_tatbikat.pdf"
+    import sys
+
+    pdf_path = sys.argv[1] if len(sys.argv) > 1 else "data/1_Turk_istiklal_harbi_mondros_mutarekesi_tatbikat.pdf"
+    output_path = pdf_path.rsplit('.', 1)[0] + ".jsonl"
+
+    print(f"Girdi: {pdf_path}")
+    print(f"Çıktı: {output_path}\n")
 
     data = process_pdf(pdf_path)
 
-    with open("output.json", "w", encoding="utf-8") as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         for row in data:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-    print("\nTamamlandı → output.jsonl (RAG uyumlu)")
+    print(f"\n✓ Tamamlandı: {len(data)} paragraf → {output_path}")
