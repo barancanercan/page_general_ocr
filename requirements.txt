@@ -1,0 +1,7 @@
+# OCR + Document Embedding Pipeline
+# CPU-only dependencies (no GPU required)
+
+pypdfium2>=4.0.0
+Pillow>=10.0.0
+pytesseract>=0.3.10
+requests>=2.31.0
