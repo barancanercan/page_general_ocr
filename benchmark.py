@@ -114,25 +114,41 @@ def split_paragraphs(text):
 # Ollama → Metin Temizleyici
 # ===============================
 
+SYSTEM_PROMPT = """Sen bir OCR post-processing motorusun. Görevin OCR'dan geçmiş Türkçe akademik/askeri metinleri düzeltmek.
+
+KURALLAR:
+1. Yalnızca OCR kaynaklı hataları düzelt (yanlış karakter, eksik harf, birleşik kelimeler)
+2. Türkçe imla ve noktalama kurallarını uygula
+3. Gereksiz satır kırılımlarını ve tire ile bölünmüş kelimeleri birleştir
+4. Orijinal anlam ve içeriği ASLA değiştirme
+5. Yeni bilgi, yorum veya açıklama EKLEME
+6. Sadece düzeltilmiş metni döndür, başka hiçbir şey yazma
+
+YASAK:
+- "İşte düzeltilmiş metin" gibi girişler
+- Madde işaretleri veya listeler oluşturma
+- Özet veya açıklama ekleme
+- Metni yeniden yazma veya genişletme"""
+
+USER_PROMPT_TEMPLATE = """Aşağıdaki OCR metnini düzelt:
+
+{text}"""
+
+
 def ollama_clean(text):
     payload = {
         "model": LLM_MODEL,
         "messages": [
-            {
-                "role": "system",
-                "content": "You are a document normalization engine. You NEVER output instructions, explanations or bullet points. You only output the cleaned document text in Turkish."
-            },
-            {
-                "role": "user",
-                "content": text
-            }
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": USER_PROMPT_TEMPLATE.format(text=text)}
         ],
-        "stream": False
+        "stream": False,
+        "options": {"temperature": 0.1, "top_p": 0.9}
     }
 
     r = requests.post(OLLAMA_CHAT, json=payload, timeout=300)
     r.raise_for_status()
-    return r.json()["message"]["content"]
+    return r.json()["message"]["content"].strip()
 
 
 # ===============================
