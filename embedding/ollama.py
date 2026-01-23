@@ -14,15 +14,27 @@ def fix_hyphenation(text):
 
 # LLM hallucination pattern'leri
 HALLUCINATION_PATTERNS = [
+    # Giriş ifadeleri
     r'^[*\s]*İşte düzeltilmiş metin[:\s]*',
     r'^[*\s]*Düzeltilmiş metin[:\s]*',
     r'^[*\s]*Aşağıda düzeltilmiş metin[:\s]*',
     r'^[*\s]*Aşağıdaki şekilde[:\s]*',
+    r'^[*\s]*Aşağıdaki değişiklikler yapıldı[:\s]*',
+    r'^[*\s]*Düzelttiğim son metin[:\s]*',
     r'^[*\s]*Yeni bilgi[:\s]*.*$',
     r'^[*\s]*Not[:\s]*.*$',
     r'^[*\s]*Açıklama[:\s]*.*$',
     r'\*\*Düzeltilmiş Metin:\*\*\s*',
     r'\*\*Eklem.*?\*\*.*$',
+    # System prompt echo pattern'leri
+    r'^Yalnızca OCR kaynaklı hataları düzelt[.\s]*$',
+    r'^Türkçe imla ve noktalama kurallarını uygula[.\s]*$',
+    r'^Gereksiz satır kırılımlarını.*birleştir[.\s]*$',
+    r'^Orijinal anlam ve içeriği.*değiştirme[.\s]*$',
+    r'^\d+\.\s*Yalnızca OCR kaynaklı.*$',
+    r'^\d+\.\s*Türkçe imla ve noktalama.*$',
+    r'^\d+\.\s*Gereksiz satır kırılımlarını.*$',
+    # Açıklama pattern'leri
     r'^Mücadele sürecinde OCR hatasını.*$',
     r'^Eğer bu metnin amacı.*düzeltmek ise.*$',
     r'^OCR hatasını düzeltmek için.*$',
