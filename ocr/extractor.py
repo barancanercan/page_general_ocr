@@ -24,20 +24,28 @@ def ocr_page(img):
 
 def detect_page_number(text):
     lines = text.strip().split('\n')
-    candidates = lines[:5] + lines[-5:] if len(lines) > 10 else lines
+    # Daha geniş arama: ilk ve son 8 satır
+    candidates = lines[:8] + lines[-8:] if len(lines) > 16 else lines
 
     patterns = [
-        r'^[—\-–]\s*(\d{1,4})\s*[—\-–]$',  # — 1 — veya - 1 -
-        r'^\(\s*(\d{1,4})\s*\)$',            # (1)
-        r'^(\d{1,4})$',                       # sadece sayı
+        r'^[—\-–_]\s*(\d{1,4})\s*[—\-–_]$',   # — 1 — veya - 1 -
+        r'^\(\s*(\d{1,4})\s*\)$',               # (1)
+        r'^[\[\{]\s*(\d{1,4})\s*[\]\}]$',       # [1] veya {1}
+        r'^(\d{1,4})\s*[—\-–]$',                # 1 — (sağda tire)
+        r'^[—\-–]\s*(\d{1,4})$',                # — 1 (solda tire)
+        r'^(\d{1,4})$',                          # sadece sayı
+        r'^\s*(\d{1,4})\s*$',                    # boşluklu sayı
     ]
 
     for line in candidates:
         line = line.strip()
+        # Çok uzun satırlar sayfa numarası olamaz
+        if len(line) > 15:
+            continue
         for pattern in patterns:
             match = re.fullmatch(pattern, line)
             if match:
                 num = int(match.group(1))
-                if 1 <= num <= 1500 and not (1800 <= num <= 2100):
+                if 1 <= num <= 500 and not (1800 <= num <= 2100):
                     return num
     return "unknown"
