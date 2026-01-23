@@ -24,11 +24,20 @@ def ocr_page(img):
 
 def detect_page_number(text):
     lines = text.strip().split('\n')
-    candidates = lines[:3] + lines[-3:] if len(lines) > 6 else lines
+    candidates = lines[:5] + lines[-5:] if len(lines) > 10 else lines
+
+    patterns = [
+        r'^[—\-–]\s*(\d{1,4})\s*[—\-–]$',  # — 1 — veya - 1 -
+        r'^\(\s*(\d{1,4})\s*\)$',            # (1)
+        r'^(\d{1,4})$',                       # sadece sayı
+    ]
+
     for line in candidates:
         line = line.strip()
-        if re.fullmatch(r'\d{1,4}', line):
-            num = int(line)
-            if 1 <= num <= 1500 and not (1800 <= num <= 2100):
-                return num
+        for pattern in patterns:
+            match = re.fullmatch(pattern, line)
+            if match:
+                num = int(match.group(1))
+                if 1 <= num <= 1500 and not (1800 <= num <= 2100):
+                    return num
     return "unknown"
