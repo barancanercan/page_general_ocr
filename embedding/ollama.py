@@ -1,5 +1,20 @@
+import re
 import requests
 from config.settings import OLLAMA_CHAT, OLLAMA_EMBED, LLM_MODEL, EMBED_MODEL
+
+
+def fix_hyphenation(text):
+    """Tire ile bölünmüş kelimeleri birleştir."""
+    # Satır sonu tire + satır başı harf → birleştir
+    text = re.sub(r'(\w+)[­\-]\s*\n\s*(\w+)', r'\1\2', text)
+    # Soft hyphen (­) temizle
+    text = text.replace('\xad', '')
+    # Çoklu boşlukları tek boşluğa indir
+    text = re.sub(r'[ \t]+', ' ', text)
+    # Çoklu satır sonlarını tek satıra indir
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
 
 SYSTEM_PROMPT = """Sen bir OCR post-processing motorusun. Görevin OCR'dan geçmiş Türkçe akademik/askeri metinleri düzeltmek.
 
@@ -18,6 +33,9 @@ YASAK:
 
 
 def clean_text(text):
+    # Önce regex ile tire-bölünme düzelt
+    text = fix_hyphenation(text)
+
     payload = {
         "model": LLM_MODEL,
         "messages": [
