@@ -28,19 +28,10 @@ def has_military_units(text):
     return bool(UNIT_REGEX.search(text))
 
 
-NORMALIZE_PROMPT = """Aşağıdaki metindeki askeri birlikleri normalize et.
+NORMALIZE_PROMPT = """Metindeki askeri birlikleri listele.
 
-KURALLAR:
-- Sadece METİNDE AÇIKÇA GEÇEN birlikleri yaz
-- OCR hatalarını düzelt (Tümenii → Tümeni)
-- Sayı + birim formatı kullan (24. Piyade Tümeni)
-- Fırka → Tümen olarak normalize et
-- Her birliği yeni satırda yaz
-- Metinde birlik YOKSA sadece BOŞ yaz
-
-YASAK:
-- Metinde olmayan birlik ekleme
-- Açıklama veya yorum yazma
+FORMAT: Her satırda SADECE birlik adı (örn: "3. Ordu", "9. Kolordu", "24. Piyade Tümeni")
+Birlik yoksa: BOŞ
 
 Metin:
 {text}"""
@@ -70,15 +61,33 @@ def extract_divisions(text):
 
         # Satırlara böl ve filtrele
         divisions = []
+        unit_pattern = re.compile(
+            r'(\d+\.?\s*(?:Piyade\s+|Süvari\s+)?(?:Tümen|Tümeni|Kolordu|Kolordusu|Tugay|Tugayı|Alay|Alayı|Ordu|Ordusu))',
+            re.IGNORECASE
+        )
+        special_pattern = re.compile(
+            r'((?:Yıldırım|Kafkas|Şark|Garp)\s+(?:Ordu|Ordusu|Kuvvet|Kuvvetleri))',
+            re.IGNORECASE
+        )
+
         for line in result.split('\n'):
             line = line.strip()
-            # Sadece birlik formatına uyan satırları al
-            if re.search(r'\d+\.?\s*(?:Piyade\s+|Süvari\s+)?(?:Tümen|Kolordu|Tugay|Alay|Ordu)', line, re.IGNORECASE):
-                divisions.append(line)
-            elif re.search(r'(?:Yıldırım|Kafkas)\s+(?:Ordu|Kuvvet)', line, re.IGNORECASE):
-                divisions.append(line)
+            # Çok uzun satırlar birlik adı olamaz
+            if len(line) > 50:
+                continue
 
-        return divisions
+            # Birlik adını regex ile çıkar
+            match = unit_pattern.search(line)
+            if match:
+                divisions.append(match.group(1))
+                continue
+
+            match = special_pattern.search(line)
+            if match:
+                divisions.append(match.group(1))
+
+        # Tekrarları kaldır
+        return list(dict.fromkeys(divisions))
 
     except Exception:
         return []
