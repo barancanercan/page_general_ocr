@@ -4,13 +4,20 @@ from config.settings import OLLAMA_CHAT, LLM_MODEL
 
 # Askeri birlik regex pattern'leri (pre-filter)
 UNIT_PATTERNS = [
-    r'\d+\.?\s*(?:Piyade\s+)?(?:Tümen|Tümeni|Tümenii)',
-    r'\d+\.?\s*(?:Piyade\s+)?(?:Kolordu|Kolordusu)',
-    r'\d+\.?\s*(?:Piyade\s+)?(?:Tugay|Tugayı)',
-    r'\d+\.?\s*(?:Piyade\s+)?(?:Alay|Alayı)',
-    r'\d+\.?\s*(?:Piyade\s+)?(?:Fırka|Fırkası)',
-    r'\d+\s*(?:nci|ncı|ncu|üncü|inci)\s+(?:Tümen|Kolordu|Tugay|Alay|Fırka)',
-    r'(?:Birinci|İkinci|Üçüncü|Dördüncü|Beşinci|Altıncı|Yedinci|Sekizinci|Dokuzuncu|Onuncu)\s+(?:Tümen|Kolordu|Fırka)',
+    # Sayısal formatlar
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Tümen|Tümeni|Tümenii|Tümenin)',
+    r'\d+\.?\s*(?:Süvari\s+)?(?:Tümen|Tümeni)',
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Kolordu|Kolordusu|Kolordunun)',
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Tugay|Tugayı|Tugayın)',
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Alay|Alayı|Alayın)',
+    r'\d+\.?\s*(?:Piyade\s+)?(?:Fırka|Fırkası|Fırkanın)',
+    # Ordu formatları
+    r'\d+\.?\s*(?:Ordu|Ordusu|Ordunun)',
+    r'(?:Yıldırım|Kafkas|Şark|Garp)\s+(?:Ordu|Ordusu|Orduları)',
+    # nci/ncı formatları
+    r'\d+\s*(?:nci|ncı|ncu|üncü|inci|ıncı)\s+(?:Tümen|Kolordu|Tugay|Alay|Fırka|Ordu)',
+    # Yazıyla yazılmış
+    r'(?:Birinci|İkinci|Üçüncü|Dördüncü|Beşinci|Altıncı|Yedinci|Sekizinci|Dokuzuncu|Onuncu)\s+(?:Tümen|Kolordu|Fırka|Ordu)',
 ]
 
 UNIT_REGEX = re.compile('|'.join(UNIT_PATTERNS), re.IGNORECASE)
@@ -66,7 +73,9 @@ def extract_divisions(text):
         for line in result.split('\n'):
             line = line.strip()
             # Sadece birlik formatına uyan satırları al
-            if re.search(r'\d+\.?\s*(?:Piyade\s+)?(?:Tümen|Kolordu|Tugay|Alay)', line, re.IGNORECASE):
+            if re.search(r'\d+\.?\s*(?:Piyade\s+|Süvari\s+)?(?:Tümen|Kolordu|Tugay|Alay|Ordu)', line, re.IGNORECASE):
+                divisions.append(line)
+            elif re.search(r'(?:Yıldırım|Kafkas)\s+(?:Ordu|Kuvvet)', line, re.IGNORECASE):
                 divisions.append(line)
 
         return divisions
