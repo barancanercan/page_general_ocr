@@ -1,54 +1,80 @@
+"""PDF to Text extraction with OCR"""
+
 import re
 import pytesseract
 import pypdfium2 as pdfium
-from config.settings import OCR_LANG, OCR_DPI, MAX_PAGES
+from PIL import ImageEnhance, ImageFilter
+from concurrent.futures import ThreadPoolExecutor
+from config.settings import OCR_LANG, OCR_DPI, WORKERS
 
 
-def pdf_to_images(path, dpi=OCR_DPI, max_pages=MAX_PAGES):
+def pdf_to_images(path, dpi=OCR_DPI):
+    """Convert PDF pages to images."""
     pdf = pdfium.PdfDocument(path)
     images = []
-    for i in range(min(len(pdf), max_pages)):
+    for i in range(len(pdf)):
         page = pdf.get_page(i)
         bitmap = page.render(scale=dpi / 72)
         images.append(bitmap.to_pil())
     return images
 
 
+def preprocess(img):
+    """Enhance image for better OCR."""
+    if img.mode != 'L':
+        img = img.convert('L')
+    img = ImageEnhance.Contrast(img).enhance(1.5)
+    img = img.filter(ImageFilter.MedianFilter(3))
+    return img
+
+
 def ocr_page(img):
+    """OCR single page, return (text, confidence)."""
+    img = preprocess(img)
     text = pytesseract.image_to_string(img, lang=OCR_LANG)
     data = pytesseract.image_to_data(img, lang=OCR_LANG, output_type=pytesseract.Output.DICT)
-    confidences = [int(c) for c in data['conf'] if int(c) > 0]
-    avg_conf = sum(confidences) / len(confidences) / 100.0 if confidences else 0.0
-    return text, round(avg_conf, 3)
+    confs = [int(c) for c in data['conf'] if int(c) > 0]
+    conf = sum(confs) / len(confs) / 100 if confs else 0.0
+    return text, round(conf, 3)
+
+
+def ocr_parallel(images):
+    """OCR multiple pages in parallel."""
+    results = [None] * len(images)
+
+    def process(args):
+        idx, img = args
+        return idx, ocr_page(img)
+
+    with ThreadPoolExecutor(max_workers=WORKERS) as executor:
+        for idx, result in executor.map(process, enumerate(images)):
+            results[idx] = result
+            print(f"\rOCR: {idx+1}/{len(images)}", end="", flush=True)
+
+    print()
+    return results
 
 
 def detect_page_number(text):
+    """Extract page number from text."""
     lines = text.strip().split('\n')
-    # Daha geniş arama: ilk ve son 10 satır
-    candidates = lines[:10] + lines[-10:] if len(lines) > 20 else lines
+    candidates = lines[:10] + lines[-10:]
 
     patterns = [
-        r'^[—\-–_]\s*(\d{1,4})\s*[—\-–_]$',     # — 1 — veya - 1 -
-        r'^[—\-–_](\d{1,4})[—\-–_]$',           # —14— (boşluksuz)
-        r'^\(\s*(\d{1,4})\s*\)$',                 # (1)
-        r'^[\[\{]\s*(\d{1,4})\s*[\]\}]$',         # [1] veya {1}
-        r'^(\d{1,4})\s*[—\-–]$',                  # 1 — (sağda tire)
-        r'^[—\-–]\s*(\d{1,4})$',                  # — 1 (solda tire)
-        r'^(\d{1,4})$',                            # sadece sayı
-        r'^\s*(\d{1,4})\s*$',                      # boşluklu sayı
+        r'^[—\-–]\s*(\d{1,4})\s*[—\-–]$',
+        r'^[—\-–](\d{1,4})[—\-–]$',
+        r'^\((\d{1,4})\)$',
+        r'^(\d{1,4})$',
     ]
 
     for line in candidates:
         line = line.strip()
-        # Çok uzun satırlar sayfa numarası olamaz
         if len(line) > 15:
             continue
-
-        # Önce orijinal satırı dene
         for pattern in patterns:
             match = re.fullmatch(pattern, line)
             if match:
                 num = int(match.group(1))
-                if 1 <= num <= 500 and not (1800 <= num <= 2100):
+                if 1 <= num <= 2000:
                     return num
     return "unknown"
