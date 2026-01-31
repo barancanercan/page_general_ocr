@@ -164,6 +164,11 @@ cython_debug/
 
 .cache/
 
+# OCR
+output/
+.temp_ocr/
+test_results/
+
 # Data files
 *.pdf
 *.jsonl
