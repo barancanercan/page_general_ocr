@@ -1,87 +1,105 @@
-# Qwen2.5-VL OCR Pipeline
+# PageGeneralOCR: Akıllı Döküman Analiz ve Sorgulama Platformu
 
-Qwen2.5-VL vision modeli ile PDF belgelerinden metin cikarma pipeline'i. Ollama uzerinden yerel GPU ile calisir.
+**PageGeneralOCR**, taranmış PDF belgeleriniz için gelişmiş bir **Optik Karakter Tanıma (OCR)** ve **Akıllı Sorgulama (RAG)** platformudur. Bu sistem, PDF'lerdeki metinleri yüksek doğrulukla çıkarmakla kalmaz, aynı zamanda bu belgelerden oluşan bilgi havuzunda doğal dilde sorular sormanıza ve sentezlenmiş, kanıta dayalı yanıtlar almanıza olanak tanır.
 
-## Gereksinimler
+![Sistem Arayüzü](https://i.imgur.com/your-screenshot-url.png) <!-- TODO: Arayüz ekran görüntüsü ekleyin -->
 
+## 🚀 Temel Özellikler
+
+- **Yüksek Başarımlı OCR:** Güçlü `Qwen-VL` ailesi modellerini kullanarak taranmış ve zorlu PDF'lerden bile metin, tablo ve diğer verileri yüksek doğrulukla çıkarır.
+- **Akıllı Soru-Cevap (RAG):** Belgelerinizle sohbet edin. Sistem, sorunuza en uygun cevapları birden çok kaynaktan toplar, sentezler ve kanıtlarıyla birlikte sunar.
+- **Gelişmiş Çeşitlendirme:** Sorgu sonuçları, en alakalı bilgileri garanti altına alırken aynı zamanda tüm belge koleksiyonundan çeşitli bakış açıları sunacak şekilde akıllıca sıralanır ve çeşitlendirilir.
+- **Yerel ve Güvenli:** Tüm işlemler (OCR ve LLM) `Ollama` aracılığıyla yerel makinenizde çalışır. Verileriniz asla dışarı çıkmaz.
+- **Kullanıcı Dostu Arayüz:** `Gradio` tabanlı basit ve etkileşimli arayüzü ile PDF yüklemek ve anında sorgulamaya başlamak çok kolaydır.
+
+## 🏛️ Mimari
+
+Sistem, iki ana ajan etrafında şekillenen modern bir RAG mimarisi kullanır:
+
+1.  **Ingestion Agent (Veri Alım Ajanı):**
+    - PDF belgelerini sayfa sayfa işler.
+    - Her sayfayı `Qwen-VL` modelini kullanarak OCR işleminden geçirir.
+    - Çıkarılan metin paragraflarını, gömme (embedding) modelleri aracılığıyla vektörlere dönüştürür.
+    - Bu vektörleri ve ilgili meta verileri (kitap adı, sayfa numarası vb.) `Qdrant` vektör veritabanına kaydeder.
+
+2.  **RAG Agent (Sorgulama Ajanı):**
+    - Kullanıcı sorgusunu alır ve bir vektöre dönüştürür.
+    - Vektör veritabanında geniş bir anlamsal arama (`k=25`) yaparak potansiyel olarak ilgili tüm belgeleri bulur.
+    - `Cross-Encoder` tabanlı bir modelle bu aday belgeleri yeniden sıralayarak (`re-ranking`) en alakalı olanları belirler.
+    - Hem en yüksek alaka düzeyini hem de kaynak çeşitliliğini sağlamak için hibrit bir **çeşitlendirme** stratejisi uygular ve nihai bağlam için en iyi belgeleri (`k=7`) seçer.
+    - Bu zenginleştirilmiş ve çeşitlendirilmiş bağlamı, güçlü bir sistem talimatıyla birlikte `Ollama` üzerindeki bir LLM'e göndererek sentezlenmiş ve kanıta dayalı bir cevap oluşturur.
+
+## 🛠️ Kurulum
+
+### Gereksinimler
 - Python 3.10+
-- NVIDIA GPU (CUDA)
+- [Poetry](https://python-poetry.org/docs/#installation) (önerilir) veya `pip`
 - [Ollama](https://ollama.com/)
+- CUDA destekli bir NVIDIA GPU (önerilir)
 
-## Kurulum
+### Adım 1: Gerekli Modelleri İndirin
+Uygulamanın ihtiyaç duyduğu tüm modelleri Ollama aracılığıyla yerel olarak indirin.
 
 ```bash
-# Ollama'yi kur ve modeli indir
+# OCR için (Yüksek performanslı model)
 ollama pull qwen2.5vl:7b
 
-# Python bagimliliklar
+# Sohbet ve sentez için (Örnek model, başka bir model de kullanabilirsiniz)
+ollama pull gemma3:latest
+```
+
+### Adım 2: Projeyi Kurun
+
+**Poetry ile (Önerilen):**
+```bash
+# Projeyi klonlayın
+git clone https://github.com/your-username/pagegeneralocr.git
+cd pagegeneralocr
+
+# Bağımlılıkları kurun
+poetry install
+```
+
+**pip ile:**
+```bash
+# Projeyi klonlayın
+git clone https://github.com/your-username/pagegeneralocr.git
+cd pagegeneralocr
+
+# Bağımlılıkları kurun
 pip install -r requirements.txt
 ```
 
-## Kullanim
+## 🏃‍♂️ Çalıştırma
+
+Uygulamayı başlatmak için aşağıdaki komutu çalıştırın:
 
 ```bash
-# Tum sayfalari isle
-python qwen_pipeline.py belge.pdf
+# Poetry kullanıyorsanız
+poetry run python src/main.py
 
-# Ilk 20 sayfa
-python qwen_pipeline.py belge.pdf --max-pages 20
-
-# JSON cikti
-python qwen_pipeline.py belge.pdf --format json
-
-# Farkli DPI
-python qwen_pipeline.py belge.pdf --dpi 300
+# pip kullanıyorsanız
+python src/main.py
 ```
 
-## Cikti
+Uygulama varsayılan olarak `http://127.0.0.1:7860` adresinde çalışmaya başlayacaktır.
 
-Sonuclar `output/` klasorune kaydedilir.
+## 📋 Kullanım
 
-**TXT formati:**
-```
-============================================================
-Sayfa 1
-============================================================
-Guven: 0.954 | Sure: 33.5s
+1.  **PDF Yükleme:** Arayüzdeki "PDF Yükle" alanını kullanarak bir veya daha fazla PDF belgesini sisteme yükleyin. "Başla" butonuna tıkladığınızda, OCR ve indeksleme süreci başlayacaktır.
+2.  **Sorgulama:** Yükleme tamamlandıktan sonra, "Sohbet" sekmesine geçin.
+    - İsterseniz, aramayı belirli bir kitapla sınırlamak için "Kitap Filtresi"ni kullanın.
+    - Sorunuzu metin kutusuna yazın ve "Gönder"e tıklayın.
+3.  **Sonuçları İnceleme:** Model, sorunuza en uygun cevabı, kullandığı kaynakları ve işlem performansını gösterecektir.
 
-[sayfa metni]
-```
+## ⚙️ Yapılandırma
 
-**JSON formati:**
-```json
-{
-  "metadata": {
-    "timestamp": "2026-01-31T...",
-    "model": "qwen2.5vl:7b",
-    "stats": { ... }
-  },
-  "pages": [
-    {
-      "page_num": 1,
-      "text": "...",
-      "confidence": 0.954,
-      "processing_time": 33.5,
-      "success": true
-    }
-  ]
-}
-```
+Tüm önemli ayarlar `src/config/settings.py` dosyasında bulunur. Bu dosyayı düzenleyerek aşağıdaki gibi parametreleri değiştirebilirsiniz:
 
-## Konfigürasyon
+- **Modeller:** `CHAT_MODEL`, `OCR_MODEL_LARGE`, `EMBED_MODEL`, `RERANK_MODEL`
+- **RAG Parametreleri:** `RAG_FETCH_K` (ilk arama boyutu), `RAG_TOP_K` (nihai bağlam boyutu)
+- **OCR Ayarları:** `OCR_DPI`, `CONFIDENCE_THRESHOLD` vb.
 
-`qwen_pipeline.py` icindeki `Config` sinifi:
+## 📄 Lisans
 
-| Parametre | Varsayilan | Aciklama |
-|-----------|-----------|----------|
-| `MODEL_NAME` | `qwen2.5vl:7b` | Ollama model adi |
-| `MODEL_TIMEOUT` | `600` | Model timeout (saniye) |
-| `DPI` | `240` | PDF render DPI |
-| `MAX_IMAGE_WIDTH` | `1800` | Max goruntu genisligi (px) |
-| `TEMPERATURE` | `0.0` | Model sicakligi (0=deterministik) |
-| `NUM_PREDICT` | `6000` | Max token sayisi |
-| `MAX_PAGES` | `0` | Max sayfa (0=tumu) |
-
-## Lisans
-
-MIT
+Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.

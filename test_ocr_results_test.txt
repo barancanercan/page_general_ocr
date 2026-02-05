@@ -1,0 +1,334 @@
+PDF: test.pdf
+Model: qwen2.5vl:3b
+Toplam sure: 440.6s
+Sayfa basina: 22.0s
+
+
+============================================================
+Sayfa 1
+============================================================
+Sure: 7.2s | Guven: 0.194
+
+T C
+GENELKURMAY BAŞKANLIĞI
+ANKARA
+TÜRK İSTİKLAL HARBI
+Mondros Mütarekesi ve Tatbikatı
+3 ncü Baskı
+Genelkurmay Askeri Tarih ve Stratejik Etüt Başkanlığı Yayınları
+GENELKURMAY BASIM EVI
+1999
+
+============================================================
+Sayfa 2
+============================================================
+Sure: 139.9s | Guven: 0.194
+
+TC
+GENELKURMAY BAŞKANLIĞI
+ANKARA
+TÜRK İSTİKLAL HARBIİ
+MONDROS MÜTAREKESİ VE
+TATBİKATI
+3 ncü Baskı
+Genelkurmay Askeri Tarih ve Stratejik Etüt Bşk. lıği Yayınları
+GENELKURMAY BASIM Evi
+1999
+
+============================================================
+Sayfa 3
+============================================================
+Sure: 11.3s | Guven: 0.037
+
+Demirbas
+996. 1023
+T. R
+1899
+<1
+GENELKURMAY BASIMEVI
+YAYIN NUMARASI : 99/3
+
+============================================================
+Sayfa 4
+============================================================
+Sure: 178.0s | Guven: 0.824
+
+ÖN S Ö Z
+
+Türk milletinin yakın mazisinde cereyan eden ve onun bünyesinde büyük değişikliklere yol açan İstiklâ Harbi'nin askeri cephesini, bütünü gerçekleriyle bilmek hususundaki hakkı isteği, her vesileyle müşahahede edilmektedir. Aralarında yaptıkları bir takım gizli anlaşmalarla Osmanlı İmparatorluğu'nun paylaşmayı planlamış bulunan İstiklâ Devletleri ve onların idareciileri; çok ağır şartları kapsayan Mondros Mütarekesi'nin uygulanmasında, Türk milletinin varlığını hiçe sayarak, keyfi bir, yol tutmuşlardır. İstiklâ Devletleri, bu kadarla da yetinmemiş, Türk vatanını, Yunan ve Ermeni kuvvetlerinin istilâ etmesine neden olmuydu. İstiklâ Harbi; hazırlanması, başlaması ve cereyanı bakımından, normal bir harple kıyas edilemeyecek kadar farklı özellikler taşır. Sebepleri tarihin derinliklerine kadar uzanan askeri, politik, sosyal, ekonomik ve sair bütün vehşeleri harbin içinde haziran olan, çeşitli cephelerdeki mücahadelelerle bir milletin makûs talihini değiştiren böyle bir harbin, tarihinin yazılmasını da ne kadar güç olacağını aşkırdır. Gerçekte Mondros Mütarekesi, Birinci Dünya Harbi'nin bir safhasını teşkil etmekte ve bu harbin tattıkkattaki sonucu olan Sevr Suh Muahe-desi'ne kadar uzanmaktadır. İstiklâ Harbi'nin ilk devreleri, sevk ve idare prensipleri, askerlik teknik teknikî bakımlarından, tamamıyla kendine özel bir karakter taşır. Olaylar, halkın o zamanki psikolojik durumu ile Kuva-yı Milliye ruhunun payını büyütür
+
+============================================================
+Sayfa 5
+============================================================
+Sure: 70.6s | Guven: 0.449
+
+1962 yılında Emekli Kurmay Albay Tevfik Bıyıklıoğlu tarafından hazırlanan ve yayınlanmamış olan bu eser, bu defa kitabin çevrelediği çeşitli olayların tespitinde, Genelkurmay Askeri Tarih ve Stratejik Etüt Başkanlığı Arşivi'nin incelme tasmı sonucu, mevcut resmi belgelerin esas tutulmuş, Başbakanlık ve Dışişleri Bakanlığı Arşivi'ne dayanılarak, resmi negriyatından ve yayınlanmamış tarihi eserlerden faydalanılarak, Tarih Yazar E. Kur. Kd. Alb. Tevfik Ercan tarafından revizyonu yapılarak, yeniden düzenlenmiş ve Askeri Tarih ve Stratejik Etüt Başkanlığı yetkili kurullarına incelenerek, ikinci kez yayına hazırlanmıştır. Erdoğan ÖZNAL
+Hava Pilot Korgeneral
+Askeri Tarih ve Stratejik Etüt Başkanı
+
+============================================================
+Sayfa 6
+============================================================
+Sure: 150.8s | Guven: 0.487
+
+İÇİNDEKİLER
+
+ÖNSÖZ
+I
+III
+GİRİŞ
+1
+BİRİNCİ BÖLÜM
+BİRİNCİ DÜNYA HABERİ'NE SON VEREN OLAYLAR
+A. 1918 YILI YAZI'NDA MÜTTEFİK DEVLETLERİN GENEL DURUMU
+9
+1. Avusturya - Macaristan, Bulgaristan ve Almanya
+2. Osmanlı İmparatorluğu
+11
+B. MÜTTEFİK DEVLETLERİN MÜTAREKE İSTEKLERİ
+1. Bulgaristan, Avusturya - Macaristan ve Almanya'nın
+Mütareke İstekleri
+20
+a. Bulgar Mütarekesi
+24
+b. Avusturya - Macaristan Mütarekesi
+c. Alman Mütarekesi
+27
+2. Osmanlı Mütarekesi
+29
+a. Mütareke İçin Yapılan Teşebbüsler
+b. Osmanlı Mütareke Heyeti ve Heyete Verilen Talimat
+32
+c. Mondros Mütarekesi Konuşmaları ve Mondros Mütarekesi Hükümleri
+35
+d. Mondros Mütarekesi Hükümlerinin Tahsilisi
+52
+e. Mütareke'nin İmzalandığı Haberinin Osmanlı Ordularına Ulaştırılması
+54
+f. Mondros Mütarekesi'ne Tepkileri
+60
+
+============================================================
+Sayfa 7
+============================================================
+Sure: 312.0s | Guven: 0.774
+
+İKİNCİ BÖLÜM
+MONDROS MÜTAREKESI TATBIKATI
+A. SURİYE CEPHESİ'NDE MÜTAREKE TATBIKATI
+1. Mütarekenin İmza Edildiği Srada Suriye Cephesi'ndeki Osmanlı Ordularının Durumu
+2. İskenderun'un İskali
+3. Mustafa Kemal Paşa'nın Yıldırım Ordular Grubu Komandandanı'ndan Geri Alınması
+4. Adana Vilayetinin Boşaltılması, 2. ncı Ordu Birlikleri'nin Yıldırım Orduları Kütäati) Pozarı Kuzeyine ve Kışlık Ordugâha Yerleşmeleri Pozantı Kuzeyine Çekilmesi ve Kışlık Ko-naklara Yerleşmesi
+5. 2. ncı Ordu'nun Toros Kuzeyine Çekilmesi ve Kışlık Ko-naklara Yerleşmesi
+6. Mersin, Tarsus, Adana ve Misis'in İşgali
+7. Toros Tünellerinin İtlaflı Kuvvetleri İsâ'ı Tarafından İşgali
+8. Pozantı, Akköprü ve Çiftehan'm İşgali
+9. Nihat Paşa'nın Yıldırım Kütäati Müfettişliği'nden Geri Alınması
+10. 2. ncı Ordu'da Terhis İşleri
+11. İşgal Altundaki Adana Vilayetinde Fransızların Mütarekeye İngilizler Tarafından İşgali
+12. Urfa, Ayntap ve Maraş'ın İngilizler Tarafından İşgali
+B. İRAK CEPHESİ'NDE MÜTAREKE TATBIKATI
+1. Mütarekenin İmza Edildiği Srada Irak Cephesi'ndeki 6. ncı Osmanlı Ordusu'nun Durumu
+2. Musul Şehrinin Mütarekeden Sonra İngilizler Tarafından İşgali
+3. Musul'un Tahliyesi İçin Verilen Müsterek Karar ve Kararın Uygulanması
+4. 6. ncı Ordu'da Terhis İşleri
+5. Musul Vilayetinin Boşaltılması'nin Tamam'annası
+6. 6. ncı Ordu'nun Musul'un Boşaltılması'ndan Sonraki Durumu
+
+============================================================
+Sayfa 8
+============================================================
+Sure: 203.9s | Guven: 0.646
+
+7. 6 ncı Ordu Komutanının ve Harbiye Nezareti'nin İngiliz Emelleri Hakkında Endişeleri
+8. Arap Çapulcuların Yağması ve Cerablus, Siftek ve Arappınar İstasyonlarının İsgali
+9. Arappınar İstasyonlarının İsgali
+10. General Allenby'nin İstekleri
+11. Birecik, Harapnaz ve Telebyaz İstasyonlarının İsgali
+12. Resülyayn'da Türk-İngiliz Komutanları Arasında Görüşme
+13. Allenby İsteklerinin Sonucu
+C. BOGAZLAR BÖLGESİNDE MÜTAREKEKE TATBİKATI
+1. Mütarekenin İmzası Sırasında Boğazlar Bölgesi ve Boğazlar Kontrol Kontrol Altına Alınması (13 Kasım 1918)
+a. İstanbul Üzerinde Deniz ve Karadeniz İtilafı Yürüyüşü
+b. İtilaf Kuvvetlerinin Denizden ve Karadeniz İstigaları
+5. İstanbul'a Gelen İtilaf Kuvvetlerinin Davranışları ve Doğurdugu Tepkiler
+6. Osmanlı Devleti'nin Füsil Kontrol Kontrol Altına Alınması
+D. BATI ANADOLU'DA İTILAF DEVLETİLERİ'NİN FAALİYETİ
+1. İzmir Olayları
+2. İtilaf Devletleri'nin Ege Bölgesi'ndeki Faaliyetleri
+3. Ocak Başlarında 14 Mayıs 1919 Tarihine Kadar Ege Bölgesi'nde Cereyan Eden Olaylar
+4. Aydın Vilayetinin Karesi Sancağı'nın Yunanistan'a Verileceği Dair Yapılan Propaganda
+
+============================================================
+Sayfa 9
+============================================================
+Sure: 191.5s | Guven: 0.667
+
+E. GÜNEYBATI ANADOLU'DA İTALYAN İŞGALI
+F. DOĞU CEPHESİ'NDEN MÜTAREKE TATBİKATI
+1. Mütarekenin İmzalandığı Sırada Osmanlı Ordusu'nun Doğu Cephesi'ndeki Durumu
+2. Kuzeybatı İran, Dağıstan ve Azerbaycan'ın Boşaltılması
+3. Üç Sancak (Elviye-i Selâse)ın Boşaltılması
+a. Boşaltılacak Üç Sancakta Asayiş Problemi
+b. 9 ncu Ordu'nun Beslenmesi Problemi
+c. 1918 Aralık Ayı Başında 9 ncu Ordu'nun Durumu ve Diğer Gaileler
+4. Batum Limanı ve Şehrinin İngilizler Tarafından İşgali
+5. Üç Sancak'taki Miliki İdarenin İngilizlere Teslimi Hakkinda Vükelâ Meclisi'nin Kararı
+6. Batum'da Toplanan Birlik ve Terhis Erlerininin Nakli Terhis Meselesi ve İngilizlerin Davranışları
+7. Yakup Şevki Paşa ile General Walker'in Kars Buluşması (7 Ocak 1919)
+8. 1919 Ocak Ayı İçinde Üç Sancakın Boşaltılması Faaliyeti
+a. Batum
+b. Kars ve Ardahan
+9. Boşaltılan Üç Sancakta Milli Teşkilat
+10. Doğuda İki Tümen Komutanımızın Tevkifleri ve Yakup Şevki Paşa'nın İstanbul'a Geri Çağrılması
+11. Doğu Vilayetimizde Asayiş Meselesi
+a. Doğu Hudut Bölgesi
+b. Doğu Vilayetlerimiz
+c. Trabzon ve Doğusu Bölgeleri
+d. Samsun, Amasya ve Sivas Bölgesi
+12. 9 ncu Ordu'da Terhis İşleri
+
+============================================================
+Sayfa 10
+============================================================
+Sure: 296.6s | Guven: 0.386
+
+ÜÇÜNCÜ BÖLÜM
+OSMANLI ORDUSU'NUN MÜTAREKE KONUŞU, KURULUŞU VE KADROSU İLE SİLAHSIZLANDIRMA PROJESİ VE TERHİS İŞLERİ
+
+A. OSMANLI ORDUSU'NUN MÜTAREKE KONUŞU VE KURULUŞU
+1. Er Kadrosu
+2. Silah Kadrosu
+a. Tüfek Mevcudu
+b. Makineci Tüfekler
+c. Top Mevcudu
+
+B. OSMANLI ORDUSU'NUN MÜTAREKE KADROSU
+
+C. OSMANLI ORDUSU'NUN SİLAHSIZLANDIRILMASI
+
+D. TERHİS İŞLERİ
+1. Osmani Hükümeti'nin Tutumu
+2. Mütareke Haksızlıklarının Yurt Aydınları Üzerindeki Tepkileri
+3. Mütareke Olayları Karşısında Türk Ordusu ve Türk Milleti
+4. Mustafa Kemal Paşa'nın Anadolu'ya Anadolu Geçisi
+BİBLLİYOGRAFYA
+
+============================================================
+Sayfa 11
+============================================================
+Sure: 164.8s | Guven: 0.672
+
+EKLER
+
+(EK : 1) Enver Paşa'nın Mütareke İsteği Hakkında Ordularına Tamimi
+(EK : 2) Amiral A. Calthorpe'un Rauf Bey'e Verdiği Mektup
+(EK : 3) Ali İhsan Paşa'nın Muhtemel İngiliz Tecavüzleri Hakkında
+Harbiye Nezareti'ni İkâzi
+(EK : 4) Harbiye Nezareti'ninin Ali İhsan Paşa'nın Tevkifi Üzerine
+Sadarete Sadareti İkâzi
+(EK : 5) Harbiye Nezareti'ninin Allenby İstekleri Hakkında Sadareti
+İkâzi
+(EK : 6) İtilâf Makamlarınca Tevkif Edilen, Geri Çağrılan ve Yerleri
+Değiştirilen Subaylar
+(EK : 7) Harbiye Nezareti'ninin Yunan Çıkarması Hakkında Sadareti
+(EK : 8) Yakup Şevki Paşa'nın Tümen Kumandanlarının Tevkifi Münasebetiyle Harbiye Nezareti'ni İkâzi
+(EK : 9) Yakup Şevki Paşa'nın Albay Mürsel'e Yazdığı Mektup
+(EK : 10) Harbiye Nezareti'nce Yakup Şevki Paşa'ya İstanbul'a Çağrılması Sebebinin Tebliği
+(EK : 11) Albay Ali Rifat'ın Yakup Şevki Paşa'ya Cevabı Mektubu
+(EK : 12) Albay Mürsel'in Yakup Şevki Paşa'ya Cevabı Mektubu
+(EK : 13) 3 ncü Ordu Mufettişliği'nin Trabzon ve Çevresinde Yerleştirilmeyen Çalışılan Rumlar Hakkında Raporu
+(EK : 14) 9 ncü Ordu Mufettişliği'ne Atanan Mustafa Kemal Paşa'nın
+Yetkilerine Dair Yönetmelik
+(EK : 15) - VIII -
+
+============================================================
+Sayfa 12
+============================================================
+Sure: 221.4s | Guven: 0.904
+
+KROKİLER
+(NO : 1) Makedonya Cephesinde Müttefik ve İtilaf Ordularının 15 Eylül 1918 Durumunu Gösterir Kroki
+(NO : 2) Mütarekenin İmzalandığı Sırada Osmanlı Ordularının Genel Durumu
+(NO : 2/A) Mütarekenin İmzalandığı Sırada Arabistan, Trablusgrap ve Bingazi'deki Osmanlı Kuvvetlerinin Genel Durumu
+(NO : 3) Mütarekenin İmzalandığı Sırada Suriye Cephesindeki Osmanlı Ordularının Genel Durumu
+(NO : 4) Mütarekenin İmzalandığı Sırada Irak Cephesindeki 6 ncı Ordu'nun Durumu
+(NO : 5) Mütarekenin İmzalandığı Sırada Trakya ve Boğazlar Bölgesindeki Osmanlı Ordularının Genel Durumu
+(NO : 6) Mütarekenin İmzalandığı Sırada Batı ve Güneybatı Bölgesindeki 8 ncı Ordu'nun Durumu
+(NO : 7) Mütarekenin İmzalandığı Sırada Osmanlı Doğu Cephesindeki Osmanlı Ordularının Genel Durumu
+(NO : 8) 14 Mayıs 1919'da Osmanlı Ordusu'nun Konuşu
+KURULUŞLAR
+(Kuruluş : 1) Mütarekenin İmza'landığı Sırada 2 ncı Ordu'nun Kuruluşu
+(Kuruluş : 2) Mütarekenin İmzalandığı Sırada 7 ncı Ordu'nun Kuruluşu
+(Kuruluş : 3) Mütarekenin İmzalandığı Sırada 6 ncı Ordu'nun Kuruluşu
+(Kuruluş : 3/A) Mütarekenin İmzalanmasından Sonraki 6 ncı Ordu'nun Kuruluşu
+(Kuruluş : 4) Mütarekenin İmzalandığı Sırada 3 ncı Ordu'nun Kuruluşu
+(Kuruluş : 5) Mütarekenin İmzalandığı Sırada 5 ncı Ordu'nun Kuruluşu
+(Kuruluş : 6) Mütarekenin İmzalandığı Sırada Boğazlar Umum Kuvvetlerinin Kuruluşu
+(Kuruluş : 7) Mütarekenin İmzalandığı Sırada 8 ncı Ordu'nun Kuruluşu
+(Kuruluş : 8) Mütarekenin İmzalandığı Sırada Kafkas İslam Ordusu'nun Kuruluşu
+(Kuruluş : 9) Mütarekenin İmzalandığı Sırada 9 ncı Ordu'nun Kuruluşu
+(Kuruluş : 10) 14 Mayıs 1919'da Osmanlı Ordusu'nun Kuruluşu
+
+============================================================
+Sayfa 13
+============================================================
+Sure: 134.2s | Guven: 1.000
+
+1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 19. 20. 21. 22. 23. 24. 25. 26. 27. 28. 29. 30. 31. 32. 33. 34. 35. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45. 46. 47. 48. 49. 50. 51. 52. 53. 54. 55. 56. 57. 58. 59. 60. 61. 62. 63. 64. 65. 66. 67. 68. 69. 70. 71. 72. 73. 74. 75. 76. 77. 78. 79. 80. 81. 82. 83. 84. 85. 86. 87. 88. 89. 90. 91. 92. 93. 94. 95. 96. 97. 98. 99. 100. 101. 102. 103. 104. 105. 106. 107. 108. 109. 110. 111. 112. 113. 114. 115. 116. 117. 118. 119. 120. 121. 122. 123. 124. 125. 126. 127. 128. 129. 130. 131. 132. 133. 134. 135. 136. 137. 138. 139. 140. 141. 142. 143. 144. 145. 146. 147. 148. 149. 150. 151. 152. 153. 154. 155. 156. 157. 158. 159. 160. 161. 162. 163. 164. 165. 166. 167. 168. 169. 170. 171. 172. 173. 174. 175. 176. 177. 178. 179. 180. 181. 182. 183. 184. 185. 186. 187. 188. 189. 190. 191. 192. 193. 194. 195. 196. 197. 198. 199. 200. 201. 202. 203. 204. 205. 206. 207. 208. 209. 210. 211. 212. 213. 214. 215. 216. 217. 218. 219. 220. 221. 222. 223. 224. 225. 226. 227. 228. 229. 230. 231. 232. 233. 234. 235. 236. 237. 238. 239. 240. 241. 242. 243. 244. 245. 246. 247. 248. 249. 250. 251. 252. 253. 254. 255. 256. 257. 258. 259. 260. 261. 262. 263. 264. 265. 266. 267. 268. 269. 270. 271. 272. 273. 274. 275. 276. 277. 278. 279. 280. 281. 282. 283. 284. 285. 286. 287. 288. 289. 290. 291. 292. 293. 294. 295. 296. 297. 298. 299. 300. 301. 302. 303. 304. 305. 306. 307. 308. 309. 310. 311. 312. 313. 314. 315. 316. 317. 318. 319. 320. 321. 322. 323. 324. 325. 326. 327. 328. 329. 330. 331. 332. 333. 334. 335. 336. 337. 338. 339. 340. 341. 342. 343. 344. 345. 346. 347. 348. 349. 350. 351. 352. 353. 354. 355. 356. 357. 358. 359. 360. 361. 362. 363. 364. 365. 366. 367. 368. 369. 370. 371. 372. 373. 374. 375. 376. 377. 378. 379. 380. 381. 382. 383. 384. 385. 386. 387. 388. 389. 390. 391. 392. 393. 394. 395. 396. 397. 398. 399. 400. 401. 402. 403. 404. 405. 406. 407. 408. 409. 410. 411. 412. 413. 414. 415. 416. 417. 418. 419. 420. 421. 422. 423. 424. 425. 426. 427. 428. 429. 430. 431. 432. 433. 434. 435. 436. 437. 438. 439. 440. 441. 442. 443. 444. 445. 446. 447. 448. 449. 450. 451. 452. 453. 454. 455. 456. 457. 458. 459. 460. 461. 462. 463. 464. 465. 466. 467. 468. 469. 470. 471. 472. 473. 474. 475. 476. 477. 478. 479. 480. 481. 482. 483. 484. 485. 486. 487. 488. 489. 490. 491. 492. 493. 494. 495. 496. 497. 498. 499. 500. 501. 502. 503. 504. 505. 506. 507. 508. 509. 510. 511. 512. 513. 514. 515. 516. 517. 518. 519. 520. 521. 522. 523. 524. 525. 526. 527. 528. 529. 530. 531. 532. 533. 534. 535. 536. 537. 538. 539. 540. 541. 542. 543. 544. 545. 546. 547. 548. 549. 550. 551. 552. 553. 554. 555. 556. 557. 558. 559. 560. 561. 562. 563. 564. 565. 566. 567. 568. 569. 570. 571. 572. 573. 574. 575. 576. 577. 578. 579. 580. 581. 582. 583. 584. 585. 586. 587. 588. 589. 590. 591. 592. 593. 594. 595. 596. 597. 598. 599. 600. 601. 602. 603. 604. 605. 606. 607. 608. 609. 610. 611. 612. 613. 614. 615. 616. 617. 618. 619. 620. 621. 62
+
+============================================================
+Sayfa 14
+============================================================
+Sure: 285.5s | Guven: 1.000
+
+OSMANLI İMPARATORLUĞU'NUN BİRİNCİ DÜNYA HARPİ'NE KADAR SÜREN GERİLEME DEVRİNE GENEL BİR BAKIŞ
+
+GİRİŞ
+
+Çağı'nın en büyük imparatorluklarından biri olan Osmanlı İmparatorluğu, 1683 yılında İkinci Viyana dövüşü ve 26 Ocak 1699 Karlofça Antlaşması'ndan sonra, Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın artık bir Osmanlı istilâsından korunması kalmadığı gibi, Orta Avrupa'nın
+
+============================================================
+Sayfa 15
+============================================================
+Sure: 62.5s | Guven: 1.000
+
+imşlardi. Devletin yeni bir yola girebilmesi, Batı Avrupa'daki ilerleme ve gelişmelerini gören, imparatorluğun içine bulunduğu çok sayıda aydınlar zümresinin iş birliğine bağış idi. O zamanki Osmanlı islahatları arasında eksik olan bir husus da XVIII. yüzyılda, Avrupa'daki büyük fikir hareketine yabancı kalmış olmaları idi. III. Selim, devleti ve özellikle orduyu yenileştirmek uğruna başını vermişti. II. Mahmud daha ihtiyatlı davranıp, yeni-gerileri kaldırmış, ağıtta batı usulündeki okullarda birçok gençler yetiştirmişti. II. Mahmud islahatı, Fransız ihtilali'nin getirdiği "insan hakları" ve XVIII. yüzyılda Avrupa'da büyük yenilikler yaratan "fikir hareketleri" anlayışında değişti. Bununla beraber II. Mahmud'un yeniliklerinden sonra, bir daha eskiye dönmülemezdi. Daima ileriye, batıya yönelenen bir hürriyet ve kalkınma hareketi üstünlüğünü gelecekti. Abdülmecit'in ilan ettiği "Gülhane Hattı Hümayunu" (3 Kasım 1839) ile bunun takip eden "İslahat Fermanı" (18 Şubat 1856) Osmanlı İmparatorluğu'nda derin izler bırakmıştır. Abdülmecit ve Abdülaziz'in bütün gabaları, kısmen mali güçlüklerden ve daha çok geri kafalı yöneticiler yüzünden başarı sağlayamamış ve tanzimat hareketi, gerektiğini gibi yürüttülememiştir. Osmanlı-Sırp ve Osmanlı-Karadağ harpleri (1875-1876) Rusya ile Avusturya'ya, Osmanlı ordusunun yenilmesi halinde, tasavvurlarını geri çekmek için anlayışlar yapmaya fırsat vermiştir. Bu sıradan ayaklananma Bulgaristan'a da sıradan. Rusya ve Avusturya planlarının uygulanması zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının zamanının
+
+============================================================
+Sayfa 16
+============================================================
+Sure: 331.0s | Guven: 1.000
+
+Berlin Kongresi'nden sonra Osmanlı İmparatorluğu, İtalyan (1911-1912) ve Balkan (1912-1913) harplerine kadar -bir ay süre 1897 Osmanlı Yunan Harbi bir yana birakılrsa- 33 yıl barış devri yaşamıştı. Bu devrede, dış hadiselerden çok, iç olaylar Osmanlı İmparatorluğu için önemli sonuçlar vermişti. "Makedonya karışıklıkları" Abdülhamit'in talihini ve İmparatorluğu'nun kaderini çizen bir problem olmuştur. Bu karışıklıklar, büyük devletlerin 1903'te kararlaştırıldıkları "Jandarma Islahat Programı" yolu ile ülkenin Osmanlı vilayetine (Selânik - Kosova - Manastır) yabancı kontrollini sökmüştü. Makedonya jandarma Islahatına karışmayan Almanya, bundan sonra Osmanlı ordusunun yeni silahları ile donatılması, eğitimini, banka, demir-yolu intiyazlarını ve iktisadi faaliyetlerini yoluyla Osmanlı İmparatorluğu'nun devletlerin itibarını ve güvenliğini kirmıştı. Harp gemileri Haliç'te gürültülmüş, orduya pratik eğitim ve savaş hazırlıkları yoluyla yasaklanmıştır. Bu idareye karşı -bütün giddet tedbirlerine rağmen- uyanan hoşnutsuzluğu yoluyla Osmanlı İmparatorluğu'nun devletlerin itibarını ve güvenliğini kurtarmıştır. Abdülhamit'in istibadı, kötü idaresi, Kanunu Esası'yı uygulamamıştır. Meşrutiyet idaresini yeni baştan yürürlüklere sokan (23 Temmuz 1908) ve bütünü yurttaşlar arasında, "hürriyet, müsavat, adalet, ve uhuwvet" ilikelerine dayanarak elbirliği ile memleketin kalkınmasını ve kurtarılmasını amaç alanları arasında büyük hayranlık, tasvip ve takdirle karşılanmıştır. Ne yazık ki kurtuluş hareketi daha ilk aylarda ciddi güçlüklerle karşılaştı. Siyasi parti kavgaları, Bosna-Hersek'in Avusturya tarafından ilhak edilmesi, Bulgar Prensliği'nin istiklalı (5 Ekim 1908), Girit olayları, 31 Mart vakası (13 Nisan 1909), Arnavutluk ve Yemen ayaklanmaları gibi gelenler de "genç Türk hareketi"nin temiz ve kurtarıcı gayretlerini ve amaçlarını köşetlemiş ve durdurmuştur. Osmanlı İmparatorluğu, Jön Türk (Jeune Turque) ihtilali ile Mart (13 Nisan 1909), Arnavutluk ve Yemen ayaklanmaları gibi gelenler de "genç Türk hareketi"nin temiz ve kurtarıcı gayretlerini ve amaçlarını köşetlemiş ve durdurmuştur
+
+============================================================
+Sayfa 17
+============================================================
+Sure: 385.2s | Guven: 1.000
+
+"İttihat ve Terakki" zamanla uyumayan her şeyi değiştirmek, bir milli suur yaratmak istiyordu. Onlar milliyetçiliği "Turançılık" şeklinde uyguluyordlardı. Türkleştirmek politikası, yabancıların da tahrikiliyle, Arnavutluları ayaklandırmış, Rumeli'indeki Hristiyan milletleri ise ümide düşürmüştü. Neticede fena idare edilen, parti kavgaları ile devlet ve ordu idaresi sarsılan imparatorluk, İtalyan taarruzu ile (1911) Afrika'da son Osmanlı toprakları "Trablusgarp (Libya) vilayeti"ni dört Balkan devletinin (Bulgar, Sırp, Karadağ, Yunan) birleşik taarruzu ile de, Meriç nehri'nin kaderi bitirin Rumeli'yi kaybetmişti (29 Ekim 1913 Türk-Bulgar İstanbul Antlaşması). Balkan Harbi'nden sonra, idare mekanizmasında ve özel olarak ordu yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda yapılan yenilik ve genişletme hareketlerine rağmen, Avrupa orduda
+
+============================================================
+Sayfa 18
+============================================================
+Sure: 397.8s | Guven: 1.000
+
+Almanya; Avrupa savaş alanlarındaki kesin sonuç yerlerinden -müm- kün olduğu kadar fazla- düşman kuvvetlerini uzak tutmak amacıyla, Osmanlı ordularının Kafkaslar'da ve Kanal bölgesinde taarruzu geçirmek için teklillerde ve zorlamalarında bulundu. Bu makasatla, Osmanlı doğu cephesinde, zayıf kuvvetlerle yapılan Köprüköy Muharebcesi (7-21 Kasım 1914)'nden sonra, 3ncü Ordu ile (9ncı, 10ncı, 11ncı Kolordular) Sarıkamış bölgesindeki -n'speten daha zayıf- Rus kuvvetlerine karşı en soğuk kuş mevsiminde, yüksek ve yolsız Al'zhiükler dağılarından yöneltilen kuşatıcı bir taarruzda 200. 000 kişilik Türk ordusu, savaş kabiliyetini kaybedecek derecede eridi (22 Aralık 1914 - 4 Ocak 1915). Sarıkamış taarruzundan bir bir ay sonra (2-3 Şubat 1915) da Süveys Kanal'na ilk Türk Türk taarruzu büyük bir gizlilik içinde yönetilmisti. İngiltere ve Fransa'nın, Çanakkale Boğazı'na taarruzu karar vermeği, Rusya'nın İstanbul ve Boğazlar üzerinde başladığı emel ve ihtiaraslarını ieri sürmcsine ve bu konuda uygulatifik arasında siyasi konuşmalara yol açmıştır. 4 Mart - 10 Nisan 1916 arasında yapılan yazılıma ve konuşmalar so- nunda, karşılıklı tavizlerle, Rusya, İngiltere ve Fransa arasında, "İstan- bul Anlaşması" meydana gelmiştir. Buna göre, Marmara Denizi'nin güney kıyıları ile Çanakkale Boğazı'nın Anadolu yakası dışında kalmak üzere Boğazlar ve İstanbul Rusya'ya bırakılmıştır. Anlaşmaya varıldığında sırada ise, kuvvetli bir İngiliz-Fransız dom- namması, Osmanlı İmparatorluğu'nun kahraman Silahlı Kuvvetleri tarafından en ağır bir yenilgi ugratılmıştır (18 Mart 1915) ve bütünü harp sürecince, yalnız da'nız kuvvetleriyle bir daha taarruza yeltenmemek üzere re, yüzgeri ettilmiştir. Çanakkale Boğazı'na karşı bir gün süren bu savaşta İngiliz-Fransız müttefik filoları kuvvetinin uygulatif birini kaybetmiştir. Bu ağır yenilgi kar-
+
+============================================================
+Sayfa 19
+============================================================
+Sure: 365.5s | Guven: 1.000
+
+şisında İtilâf Devletleri, kara kuvvetleri ile Çanakkale Boğazı'nı ele geçirmeye karar vermişti. 25 Nisan 1915 - 8/9 Ocak 1916 arasında karada, Gebelolu Yarmadasi'nin batı kıyılarında, sekiz büyük ay süren kanlı savaşlar sonunda da daha ağır kayıplar vererek, bir defa daha çok ilerlemek zorunda kalmışlardı. Çanakkale savaşları, İtilâf Devletleri için siyasi ve askeri çok ağır bir yenilgi olduğu kadar, Osmanlı İmparatorluğu ve Türk milleti için es sız bir zafer olmuştur. Bu zafer Türk milletinin ve ordusunun, iyi yönetilince her fedakârlığına katlanacağına ve zorluğunu yeneceğini göstermiştir. Boğazları ve İstanbul'u Ruslara bırakan anlaşmaya, Türk milletinin Çanakkale zaferinden daha açık ve kuvvetli bir cevabı olamazdı. Buna rağmen Rusya bir anlaşma ile İstanbul ve Boğazları almakla Osmanlı İmparatorluğu'nun geleceğini meselesini ortaya attı. Bu olay, yeni gârtlara göre, Osmanlı İmparatorluğu'nun paylaşılması için harp içinde (1915-1917) gizli anlaşmalar ve antlaşmalar yapılmasını yol açmıştır. İtilâf Devletleri arasındaki gizli "paylaşma anlaşmaları"nun başlıcaları şunlardır:
+
+1. İstanbul ve Boğazları Rusya'ya bırakan 4 Mart - 10 Nisan 1915 İngiliz - Fransız - Rus anlaşması. 2. Harabe girmeden önce karşılaştım sağlam isteyen İtalya'ya "An talya ve buna bitişik Güney Anadolu'da ve Akdeniz kıyılarında adilâne bir pay" verilmesini kabul eden, İngiltere - Fransa ve İtalya arasında 26 Nisan 1915 Londra Antlaşması. 3. Güneydoğu Anadolu, Irak, Suriye ve diğer Arap memleketleri hakkında 3 Ocak 1916 "Sykes-Picot" anlaşması. 4. 26 Nisan 1916 İngiliz - Rus - Fransız "Petersburg" anlaşması. Buna göre, Fransa ve Rusya'nın Sivas - Kayseri - Mersin çizgisi doğusundaki bölgeni ilhak edileceğini kabul etti. 5. 9-16 Mayıs 1919 "Sykes-Picot" antlaşması. Bu anlaşma, daha önceki iki uzman arasında yapılmış olan 3 Ocak 1916 tarihli sözleşmeyi tamamlamıştı. 6. İtalya'da; St. Jean-de Maurienne'de (19-21 Nisan 1917) İzmir ile birlikte Batı Anadolu'nun kendisine ilhakını İngiltere ve Fransa'ya kabul ettirdiği gibi, ilhak edileceğini kabul etti
+
+============================================================
+Sayfa 20
+============================================================
+Sure: 367.3s | Guven: 0.583
+
+Bu son anlaşmayı -iltilâl yılından- Rusya tasdik edememişti. Yukarıda görüldüğü gibi, Birinci Dünya Harbi içinde, Itilâf Devletleri arasında yapılan gizli anlaşmalarla Osmanlı İmparatorluğu dört devlet arasında (İngiltere, Fransa, Rusya ve İtalya) paylaşılmıştı. Ortada, her türlü yaşama niteliğinden yoksun, Kastamonu, Ankara, Eskişehir ve Bursa vilayetininin bir kısmından ibaret küçük bir Osmanlı Devleti bırakmak istenmişti. Bu öldürücü gizli anlaşmaların uygulanabilmesi için, Itilâf Devletleri'nin harbi kazanabilimeleri, kendilerine ayrılan bölgeleri fiilen işgal etmeleri ve bu toprakların gerçek sahibi olan Türk milletininin de bütün bu hakslıklarını bir olup-bitti halinde kabul etmesi gerekiyordu. Merkez Devletlerinin [*] harbi kaybetmeleri halinde, Osmanlı Devleti'nin sonu gelmiş olacaktır. [*] Almanya ve Avusturya-Macaristan Devletlerine verilen bir isimdir. Birinci Dünya Harbi'nde Osmanlı İmparatorluğu ve Bulgaristan da bu zümreye katılmışlardır

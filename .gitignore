@@ -173,3 +173,6 @@ test_results/
 *.pdf
 *.jsonl
 data/
+
+# Qdrant
+qdrant_data/

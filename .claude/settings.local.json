@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git stash:*)",
+      "Bash(git pull:*)",
+      "Bash(git remote add:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git fetch:*)",
+      "Bash(git reset:*)",
+      "Bash(git checkout:*)",
+      "Bash(where:*)",
+      "Bash(Start-Process -FilePath \"ollama\" -ArgumentList \"serve\" -WindowStyle Hidden)",
+      "Bash(python:*)",
+      "Bash(powershell -Command \"\\(Get-Content qwen_pipeline_crop.py -Raw\\) -replace ''pdf_name\\\\}_qwen_'', ''pdf_name}_crop_'' | Set-Content qwen_pipeline_crop.py -NoNewline\")",
+      "WebSearch",
+      "Bash(cmd:*)",
+      "Bash(powershell:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nTemiz OCR pipeline: Qwen2.5-VL tek dosya mimarisi\n\n- Eski modüler yapı tamamen kaldırıldı \\(config/, core/, entity/, llm/,\n  ocr/, paragraph/, pipelines/, main.py\\)\n- Deneme dosyaları silindi \\(qwen.py, qwen_pipeline_crop.py,\n  qwen_pipeline_regex.py, test_results/\\)\n- Sayfa numarası algılama kodu kaldırıldı \\(regex, interpolation, roman\\)\n- Tek dosya pipeline: qwen_pipeline.py \\(PDF sayfa numarası + OCR metin\\)\n- Tek model çağrısı/sayfa, temperature=0.0, DPI=240\n- Çıktı: output/ klasörü \\(txt/json\\)\n- requirements.txt sadeleştirildi \\(ollama, pypdfium2, Pillow\\)\n- README.md güncellendi\n- .gitignore güncellendi \\(output/, .temp_ocr/, test_results/\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(wmic logicaldisk get:*)",
+      "Bash(pip show:*)",
+      "Bash(.venv/Scripts/python.exe:*)",
+      "Bash(.venv/Scripts/pip.exe:*)",
+      "Bash(git log:*)",
+      "Bash(.venv/Scripts/pip:*)",
+      "Bash(ls:*)",
+      "Bash(dir /b \"C:\\\\Users\\\\user\\\\Desktop\\\\page_general_ocr\\\\*.py\")"
+    ]
+  }
+}
