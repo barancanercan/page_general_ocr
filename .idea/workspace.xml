@@ -5,24 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e8380700-49b2-4e27-927b-2471a8c76d7f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/README_NEW.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bulk_ingest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run_new.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/agents/ingestion_agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/agents/rag_agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/agents/supervisor_agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/config/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/embedding_service.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/ocr_service.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/vector_db_service.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/military_extraction.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/text_processing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ingest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/cleanup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/normalization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.temp_ocr_run/14_turk_istiklal_harbi_bati_cephesi_sakarya_onceki_olaylar_page_42.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qwen_pipeline.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README_NEW.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bulk_ingest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_new.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/agents/rag_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/agents/rag_agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/agents/supervisor_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/vector_db_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/vector_db_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_ocr_results_test.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +81,9 @@
       <workItem from="1769674200280" duration="117000" />
       <workItem from="1769674328605" duration="13890000" />
       <workItem from="1769752858863" duration="40996000" />
-      <workItem from="1770218564586" duration="32075000" />
+      <workItem from="1770218564586" duration="35019000" />
+      <workItem from="1770305556938" duration="21863000" />
+      <workItem from="1771307114003" duration="4845000" />
     </task>
     <servers />
   </component>

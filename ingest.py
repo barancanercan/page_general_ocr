@@ -10,9 +10,9 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
-logger = logging.getLogger("BulkIngest")
+logger = logging.getLogger("Ingest")
 
-def run_bulk_ingest():
+def run_ingest():
     """
     'data' klasörünü tarar, içindeki PDF dosyalarını bulur ve daha önce
     veritabanına eklenmemiş olanları işleyerek kaydeder.
@@ -43,12 +43,8 @@ def run_bulk_ingest():
         file_start_time = time.time()
         logger.info(f"--- Dosya {i+1}/{len(pdf_files)} işleniyor: {pdf_path.name} ---")
 
-        # IngestionAgent, bir kitabın daha önce işlenip işlenmediğini
-        # zaten kontrol eder ve gerekirse atlar.
-        
         progress_messages = []
         def on_progress(msg: str):
-            # İlerleme mesajlarını anlık olarak da loglayabiliriz
             logger.info(f"  > {msg}")
             progress_messages.append(msg)
 
@@ -86,4 +82,4 @@ def run_bulk_ingest():
     logger.info(f"  - Toplam Süre: {total_duration / 60:.2f} dakika.")
 
 if __name__ == "__main__":
-    run_bulk_ingest()
+    run_ingest()

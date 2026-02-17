@@ -8,6 +8,7 @@ from src.config import settings
 from src.services.embedding_service import EmbeddingService
 from src.services.vector_db_service import VectorDBService
 from src.utils.military_extraction import extract_units
+from src.utils.normalization import normalize_unit_name
 
 logger = logging.getLogger(__name__)
 
@@ -29,16 +30,48 @@ class RAGAgent:
     def __init__(self):
         self.embedding_service = EmbeddingService()
         self.vector_db = VectorDBService()
+        # Birlik varyasyonlarını önbellekte tutmak için
+        self._unit_map = {} 
 
     def get_ingested_books(self) -> List[str]:
-        """
-        Retrieves a list of all unique book titles from the vector database.
-        """
         try:
             return self.vector_db.get_ingested_books()
         except Exception as e:
             logger.error(f"Failed to get ingested books: {e}", exc_info=True)
             return []
+
+    def get_all_units(self) -> List[str]:
+        """
+        Veritabanındaki tüm birlikleri çeker, normalize eder ve gruplar.
+        Arayüze sadece temiz isimleri döndürür.
+        """
+        try:
+            raw_units = self.vector_db.get_all_units()
+            self._unit_map = defaultdict(list)
+            
+            for raw in raw_units:
+                clean = normalize_unit_name(raw)
+                if clean:
+                    self._unit_map[clean].append(raw)
+            
+            # Temiz isimleri alfabetik döndür
+            return sorted(list(self._unit_map.keys()))
+        except Exception as e:
+            logger.error(f"Failed to get units: {e}", exc_info=True)
+            return []
+
+    def _get_unit_variations(self, unit_name: str) -> List[str]:
+        """
+        Seçilen temiz ismin tüm varyasyonlarını döndürür.
+        """
+        if not unit_name or unit_name == "Tüm Birlikler":
+            return None
+        
+        # Eğer map boşsa doldur
+        if not self._unit_map:
+            self.get_all_units()
+            
+        return self._unit_map.get(unit_name, [unit_name])
 
     def _format_source_ref(self, hit: Dict[str, Any]) -> str:
         book = hit.get("book_title", "Bilinmeyen Kitap")
@@ -47,9 +80,8 @@ class RAGAgent:
 
     def _build_context(self, hits: List[Dict[str, Any]]) -> str:
         if not hits:
-            return "" # Return empty string if no hits
+            return "" 
         
-        # A daha temiz ve LLM'in kafasını karıştırmayacak format
         parts = []
         for hit in hits:
             book = hit.get("book_title", "Bilinmeyen Kitap")
@@ -60,16 +92,11 @@ class RAGAgent:
         return "\n\n---\n\n".join(parts)
 
     def _diversify_results(self, candidates: List[Dict[str, Any]], top_k: int) -> List[Dict[str, Any]]:
-        """
-        Selects a diverse set of results using a hybrid strategy.
-        It guarantees the top N most relevant results are included, then fills the rest
-        with diverse sources from other books.
-        """
         if not candidates:
             return []
 
         top_k = min(top_k, len(candidates))
-        guaranteed_top_n = 2 # Performans için 3'ten 2'ye düşürüldü
+        guaranteed_top_n = 2
         if top_k < guaranteed_top_n:
             return candidates[:top_k]
 
@@ -101,7 +128,7 @@ class RAGAgent:
         
         return final_selection
 
-    def chat(self, question: str, history: Optional[List[Tuple[str, str]]] = None, book_filter: Optional[str] = None) -> Tuple[str, List[str], Dict[str, float]]:
+    def chat(self, question: str, history: Optional[List[Tuple[str, str]]] = None, book_filter: Optional[str] = None, unit_filter: Optional[str] = None) -> Tuple[str, List[str], Dict[str, float]]:
         timing = {"embed": 0.0, "search": 0.0, "rerank": 0.0, "llm": 0.0, "total": 0.0}
         t_start = time.time()
 
@@ -110,19 +137,27 @@ class RAGAgent:
             question_entities = extract_units(question)
             query_vector = self.embedding_service.embed_query(question)
             timing["embed"] = time.time() - t0
-            logger.info(f"Question: '{question}' | Extracted Entities: {question_entities}")
+            
+            # Seçilen birliğin varyasyonlarını al
+            target_units = self._get_unit_variations(unit_filter)
+            
+            logger.info(f"Question: '{question}' | Unit Filter: {unit_filter} (Variations: {target_units}) | Book Filter: {book_filter}")
 
             t1 = time.time()
             candidates = self.vector_db.hybrid_search(
                 query_vector, 
                 entities=question_entities,
                 top_k=settings.RAG_FETCH_K, 
-                book_filter=book_filter
+                book_filter=book_filter,
+                unit_filter=target_units # Varyasyon listesini gönder
             )
             timing["search"] = time.time() - t1
             
             if not candidates:
-                return "Aradığınız kriterlere uygun kaynak bulunamadı. Lütfen farklı bir soru sorun veya veritabanına yeni belgeler ekleyin.", [], timing
+                msg = "Aradığınız kriterlere uygun kaynak bulunamadı."
+                if unit_filter:
+                    msg += f" (Seçilen Birlik: {unit_filter})"
+                return msg, [], timing
 
             t2 = time.time()
             candidate_texts = [c.get("text", "") for c in candidates]
@@ -135,14 +170,12 @@ class RAGAgent:
             timing["rerank"] = time.time() - t2
 
             final_hits = self._diversify_results(candidates, settings.RAG_TOP_K)
-            logger.info(f"Selected {len(final_hits)} diversified sources for LLM from {len(set(c.get('book_title') for c in final_hits))} unique books.")
-
+            
             context = self._build_context(final_hits)
             
             if not context:
                  return "Verilen kaynaklarda bu konu hakkında spesifik bir bilgi bulunmamaktadır.", [], timing
 
-            # Kullanıcı sorusunu ve kaynakları tek bir mesaja birleştirme
             user_prompt = f"""Kullanıcı Sorusu: "{question}"
 
 --- KAYNAK METİNLER ---
