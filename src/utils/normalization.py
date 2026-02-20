@@ -1,5 +1,12 @@
 import re
 
+# Türkçe sıra ekleri (inci, üncü, nci, ncü, vs.)
+_ORDINAL_PATTERN = r"['\']?\s*(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü)"
+
+# Birlik tipleri
+_UNIT_TYPES = r'(?:Tümen|Kolordu|Ordu|Alay|Tugay|Tabur|Bölük|Batarya)'
+
+
 def normalize_unit_name(raw_name: str) -> str:
     """
     Ham birlik ismini standart bir formata dönüştürür.
@@ -15,10 +22,24 @@ def normalize_unit_name(raw_name: str) -> str:
     # Fazla boşlukları sil
     name = re.sub(r'\s+', ' ', name)
     
-    # 2. Sayı Suffixlerini Düzeltme (ncı, nci, uncu, üncü -> .)
-    # "3 ncü" -> "3."
-    name = re.sub(r'(\d+)\s*[\'’]?[ncvuü][cç][ıiuü]', r'\1.', name, flags=re.IGNORECASE)
-    
+    # 2a. Sıra eklerini kaldır ve nokta ekle
+    # "3 ncü", "57 inci", "1'inci" -> "3.", "57.", "1."
+    name = re.sub(rf'(\d+){_ORDINAL_PATTERN}', r'\1.', name, flags=re.IGNORECASE)
+
+    # 2a-2. Nokta sonrası bağımsız sıra ekini kaldır
+    # "57. nci Tümen", "57. Ncü Tümen" -> "57. Tümen"
+    _STANDALONE_ORDINAL = r'\b(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü)\b'
+    name = re.sub(rf'(\d+\.)\s*{_STANDALONE_ORDINAL}\s+', r'\1 ', name, flags=re.IGNORECASE)
+
+    # 2b. Ek olmadan "57 Alay" -> "57. Alay"
+    name = re.sub(rf'(\d+)\s+({_UNIT_TYPES})', r'\1. \2', name, flags=re.IGNORECASE)
+
+    # 2c. Çoklu noktaları temizle "57.." -> "57."
+    name = re.sub(r'\.{2,}', '.', name)
+
+    # 2d. Nokta sonrası boşluk garantisi "57.Alay" -> "57. Alay"
+    name = re.sub(rf'(\d+\.)\s*({_UNIT_TYPES})', r'\1 \2', name, flags=re.IGNORECASE)
+
     # 3. Yaygın Kısaltmaları Açma
     # Kol. -> Kolordu
     name = re.sub(r'\bKol\.', 'Kolordu', name, flags=re.IGNORECASE)

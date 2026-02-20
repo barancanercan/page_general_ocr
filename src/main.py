@@ -122,9 +122,12 @@ def inspect_data(book_filter, unit_filter, limit):
     """
     Veritabanındaki paragrafları filtreleyip tablo ve indirilebilir dosya olarak döndürür.
     """
+    # Normalize edilmiş birlik adının tüm varyasyonlarını al
+    unit_variations = rag_agent._get_unit_variations(unit_filter)
+
     data = VectorDBService.browse_paragraphs(
-        book_filter=book_filter, 
-        unit_filter=unit_filter,
+        book_filter=book_filter,
+        unit_filter=unit_variations,
         limit=int(limit)
     )
     
