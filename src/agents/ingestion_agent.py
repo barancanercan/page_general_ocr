@@ -22,6 +22,14 @@ class IngestionAgent:
         self.vector_db = VectorDBService()
         self.embedding_service = EmbeddingService()
 
+    def _validate_pdf_path(self, pdf_path: str) -> Path:
+        path = Path(pdf_path).resolve()
+        if not path.exists():
+            raise FileNotFoundError(f"PDF dosyası bulunamadı: {pdf_path}")
+        if path.suffix.lower() != '.pdf':
+            raise ValueError("Sadece PDF dosyaları kabul edilir")
+        return path
+
     def _make_book_title(self, pdf_path: str) -> str:
         stem = Path(pdf_path).stem
         import re
@@ -39,7 +47,10 @@ class IngestionAgent:
             if progress_callback:
                 progress_callback(msg)
 
-        book_title = self._make_book_title(pdf_path)
+        validated_path = self._validate_pdf_path(pdf_path)
+        pdf_path_str = str(validated_path)
+
+        book_title = self._make_book_title(pdf_path_str)
 
         if self.vector_db.is_book_ingested(book_title):
             msg = f"'{book_title}' already ingested, skipping."
@@ -54,9 +65,9 @@ class IngestionAgent:
             # Get total pages first
             try:
                 import pypdfium2 as pdfium
-                pdf = pdfium.PdfDocument(pdf_path)
-                total_pages = len(pdf)
-                pdf.close()
+                with open(pdf_path_str, 'rb') as pdf_file:
+                    pdf = pdfium.PdfDocument(pdf_file)
+                    total_pages = len(pdf)
             except Exception as e:
                 return {"status": "error", "message": f"Could not read PDF: {e}", "paragraphs": 0}
 

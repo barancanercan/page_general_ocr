@@ -9,6 +9,8 @@ from src.core.models import Paragraph
 
 logger = logging.getLogger(__name__)
 
+_collection_checked = set()
+
 class VectorDBService:
     _client = None
     _client_lock = threading.Lock()
@@ -23,7 +25,12 @@ class VectorDBService:
         return cls._client
 
     @classmethod
-    def ensure_collection(cls):
+    def ensure_collection(cls, force: bool = False):
+        global _collection_checked
+        
+        if not force and settings.COLLECTION_NAME in _collection_checked:
+            return
+        
         client = cls.get_client()
         try:
             collections = [c.name for c in client.get_collections().collections]
@@ -33,6 +40,7 @@ class VectorDBService:
                     vectors_config=models.VectorParams(size=settings.EMBED_DIM, distance=models.Distance.COSINE),
                 )
                 logger.info(f"Created collection: {settings.COLLECTION_NAME}")
+            _collection_checked.add(settings.COLLECTION_NAME)
         except Exception as e:
             logger.error(f"Failed to ensure collection: {e}")
 
@@ -202,11 +210,13 @@ class VectorDBService:
         while True:
             result, next_offset = client.scroll(
                 collection_name=settings.COLLECTION_NAME,
-                limit=100,
+                limit=500,
                 offset=offset,
                 with_payload=["book_title"],
                 with_vectors=False,
             )
+            if not result:
+                break
             for point in result:
                 books.add(point.payload.get("book_title", ""))
             if next_offset is None:
@@ -224,11 +234,13 @@ class VectorDBService:
         while True:
             result, next_offset = client.scroll(
                 collection_name=settings.COLLECTION_NAME,
-                limit=200,
+                limit=500,
                 offset=offset,
                 with_payload=["military_units"],
                 with_vectors=False,
             )
+            if not result:
+                break
             for point in result:
                 point_units = point.payload.get("military_units", [])
                 if isinstance(point_units, list):

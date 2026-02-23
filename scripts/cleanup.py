@@ -7,8 +7,28 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("Cleanup")
 
-def remove_directory(path):
+PROTECTED_DIRS = {'.', '..', 'C:\\', 'D:\\', 'qdrant_data', 'data', 'src', 'scripts'}
+
+def _is_safe_path(path: Path) -> bool:
+    resolved = path.resolve()
+    if '..' in str(path):
+        return False
+    for protected in PROTECTED_DIRS:
+        if protected in str(resolved):
+            return False
+    return True
+
+def remove_directory(path, confirm: bool = False):
     """Bir klasörü ve içeriğini güvenli bir şekilde siler."""
+    if not confirm:
+        logger.info("Silme işlemi iptal edildi. Devam etmek için confirm=True kullanın.")
+        return
+    
+    target_path = Path(path)
+    if not _is_safe_path(target_path):
+        logger.error(f"Hata: Bu klasör silinemez! Güvenli değil: {path}")
+        return
+    
     if os.path.exists(path):
         try:
             shutil.rmtree(path)
@@ -18,8 +38,12 @@ def remove_directory(path):
     else:
         logger.info(f"ℹ️ BULUNAMADI (Zaten yok): {path}")
 
-def cleanup_system():
+def cleanup_system(confirm: bool = False):
     logger.info("--- 🧹 Sistem Temizliği Başlatılıyor ---")
+    
+    if not confirm:
+        print("Silme işlemi iptal edildi. Devam etmek için confirm=True kullanın.")
+        return
     
     # Proje kök dizini (scripts klasörünün bir üstü)
     root_dir = Path(__file__).resolve().parent.parent
@@ -38,7 +62,7 @@ def cleanup_system():
     ]
 
     for dir_path in temp_dirs:
-        remove_directory(str(dir_path))
+        remove_directory(str(dir_path), confirm=confirm)
 
     # Eski dosyaları da temizleyelim
     old_files = [
@@ -50,6 +74,9 @@ def cleanup_system():
     
     for file_path in old_files:
         if file_path.exists():
+            if not _is_safe_path(file_path):
+                logger.error(f"Hata: Bu dosya silinemez! Güvenli değil: {file_path}")
+                continue
             try:
                 os.remove(file_path)
                 logger.info(f"✅ SİLİNDİ: {file_path.name}")
@@ -59,4 +86,6 @@ def cleanup_system():
     logger.info("--- ✨ Temizlik Tamamlandı ---")
 
 if __name__ == "__main__":
-    cleanup_system()
+    import sys
+    confirm = '--confirm' in sys.argv or '-y' in sys.argv
+    cleanup_system(confirm=confirm)

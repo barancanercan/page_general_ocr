@@ -6,6 +6,12 @@ logger = logging.getLogger(__name__)
 
 TURKISH_CHARS = r'a-zA-ZçğıöşüÇĞİÖŞÜ'
 
+# Modül düzeyinde derlenmiş regex patternleri
+_REPEAT_LINE = re.compile(r'^(.+)$(\n\1)+', re.MULTILINE)
+_REPEAT_SENTENCE = re.compile(r'(.+?)\s+\1\s+\1', re.IGNORECASE)
+_HYPHEN_PATTERN = re.compile(r'([a-zA-ZçÇğĞıİöÖşŞüÜ])-\s*\n\s*([a-zA-ZçÇğĞıİöÖşŞüÜ])')
+_DASH_PATTERN = re.compile(r'([a-zA-ZçÇğĞıİöÖşŞüÜ])[–—]\s*\n\s*([a-zA-ZçÇğĞıİöÖşŞüÜ])')
+
 def calculate_confidence(text: str) -> float:
     """Calculates a simple confidence score based on text length and Turkish characters."""
     if not text:
@@ -15,58 +21,160 @@ def calculate_confidence(text: str) -> float:
         score = min(1.0, score + 0.1)
     return round(score, 3)
 
+def detect_tail_repetition(text: str, min_phrase_len: int = 2, min_repeats: int = 4) -> Tuple[str, bool, int, str]:
+    """
+    OCR'ın paragraf sonunda takılıp kaldığı durumları tespit eder.
+    Örnek: "yardımcı olur yardımcı olur yardımcı olur yardımcı olur"
+
+    Sadece metnin SON kısmına odaklanır (son 60 kelime).
+    En az 4 ardışık tekrar gerektirir (doğal tekrarları yok sayar).
+
+    Returns: (cleaned_text, has_repetition, repeat_count, repeated_phrase)
+    """
+    if not text:
+        return "", False, 0, ""
+
+    words = text.split()
+    total_words = len(words)
+
+    if total_words < 10:
+        return text, False, 0, ""
+
+    # Sadece son 60 kelimeyi kontrol et (OCR genelde sonda takılır)
+    tail_size = min(60, total_words)
+    tail_start = total_words - tail_size
+    tail_words = words[tail_start:]
+
+    has_repetition = False
+    repetition_count = 0
+    repeated_phrase = ""
+    best_cut_point = len(tail_words)  # Kesim noktası
+
+    # 2-5 kelimelik phrase'leri kontrol et
+    for phrase_len in range(min_phrase_len, min(6, len(tail_words) // min_repeats + 1)):
+        i = 0
+        while i <= len(tail_words) - phrase_len * min_repeats:
+            phrase = ' '.join(tail_words[i:i + phrase_len]).lower()
+
+            # Bu phrase kaç kez ardışık tekrar ediyor?
+            repeat_count = 1
+            j = i + phrase_len
+            while j + phrase_len <= len(tail_words):
+                next_phrase = ' '.join(tail_words[j:j + phrase_len]).lower()
+                if next_phrase == phrase:
+                    repeat_count += 1
+                    j += phrase_len
+                else:
+                    break
+
+            # En az min_repeats (4) ardışık tekrar varsa bu gerçek bir OCR hatası
+            if repeat_count >= min_repeats:
+                has_repetition = True
+                repeated_phrase = phrase
+                # Tekrar eden kısmın başlangıcını işaretle
+                cut_at = i + phrase_len  # Sadece ilk tekrarı tut
+                if cut_at < best_cut_point:
+                    best_cut_point = cut_at
+                    repetition_count = repeat_count - 1
+                break
+
+            i += 1
+
+        if has_repetition:
+            break
+
+    if has_repetition:
+        # Metnin başını koru, sadece tekrar eden kuyruk kısmını kes
+        clean_words = words[:tail_start] + tail_words[:best_cut_point]
+        return ' '.join(clean_words), True, repetition_count, repeated_phrase
+
+    return text, False, 0, ""
+
+
+def detect_phrase_repetition(text: str, min_phrase_len: int = 2, max_repeats: int = 4) -> Tuple[str, bool, int]:
+    """
+    Eski fonksiyon - geriye uyumluluk için.
+    Yeni detect_tail_repetition fonksiyonunu çağırır.
+    """
+    cleaned, has_rep, count, _ = detect_tail_repetition(text, min_phrase_len, max_repeats)
+    return cleaned, has_rep, count
+
+
+def detect_tail_repetition_detailed(text: str, min_phrase_len: int = 2, min_repeats: int = 4) -> dict:
+    """
+    Detaylı tekrar analizi - debug ve raporlama için.
+    """
+    cleaned, has_rep, count, phrase = detect_tail_repetition(text, min_phrase_len, min_repeats)
+
+    # Son 100 karakteri al (kuyruk önizlemesi)
+    tail_preview = text[-150:] if len(text) > 150 else text
+
+    return {
+        "has_repetition": has_rep,
+        "repeat_count": count,
+        "repeated_phrase": phrase,
+        "tail_preview": tail_preview,
+        "cleaned_text": cleaned
+    }
+
 def detect_and_remove_repetitions(text: str) -> Tuple[str, bool]:
     """Detects and removes repetitive patterns in text."""
     if not text:
-        return text, False
-    
+        return "", False
+
     original_len = len(text)
     cleaned_text = text
     has_repetition = False
-    
-    # Line-based repetition
+
+    # 1. Phrase-level tekrar tespiti (yeni)
+    cleaned_text, phrase_rep, rep_count = detect_phrase_repetition(cleaned_text)
+    if phrase_rep:
+        has_repetition = True
+        logger.warning(f"Phrase repetition detected: {rep_count} repeated phrases removed")
+
+    # 2. Line-based repetition
     lines = cleaned_text.split('\n')
     unique_lines = []
     seen_lines = set()
-    
+
     for line in lines:
         line_stripped = line.strip()
         if not line_stripped:
             unique_lines.append(line)
             continue
-        
+
         if line_stripped in seen_lines:
             has_repetition = True
             continue
         seen_lines.add(line_stripped)
         unique_lines.append(line)
-    
+
     cleaned_text = '\n'.join(unique_lines)
-    
-    # Sentence-based repetition
+
+    # 3. Sentence-based repetition
     sentences = re.split(r'[.!?]+\s*', cleaned_text)
     unique_sentences = []
     seen_sentences = set()
-    
+
     for sent in sentences:
         sent_stripped = sent.strip()
         if not sent_stripped or len(sent_stripped) < 20:
             unique_sentences.append(sent)
             continue
-        
+
         if sent_stripped in seen_sentences:
             has_repetition = True
             continue
         seen_sentences.add(sent_stripped)
         unique_sentences.append(sent)
-    
+
     cleaned_text = '. '.join([s for s in unique_sentences if s.strip()])
     cleaned_text = re.sub(r'\n{3,}', '\n\n', cleaned_text)
     cleaned_text = cleaned_text.strip()
-    
+
     if has_repetition:
         logger.debug(f"Repetition cleanup: {original_len} -> {len(cleaned_text)} chars")
-    
+
     return cleaned_text, has_repetition
 
 def post_process_text(text: str) -> str:

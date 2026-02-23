@@ -7,18 +7,33 @@ _ORDINAL_PATTERN = r"['\']?\s*(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü)"
 _UNIT_TYPES = r'(?:Tümen|Kolordu|Ordu|Alay|Tugay|Tabur|Bölük|Batarya)'
 
 
+def tr_capitalize(word: str) -> str:
+    """Türkçe'ye özgü büyük harf dönüştürme."""
+    if not word:
+        return word
+    turkish_upper = {
+        'a': 'A', 'b': 'B', 'c': 'C', 'ç': 'Ç', 'd': 'D', 'e': 'E',
+        'f': 'F', 'g': 'G', 'ğ': 'Ğ', 'h': 'H', 'ı': 'I', 'i': 'İ',
+        'j': 'J', 'k': 'K', 'l': 'L', 'm': 'M', 'n': 'N', 'ö': 'Ö',
+        'p': 'P', 'r': 'R', 's': 'S', 'ş': 'Ş', 't': 'T', 'u': 'U',
+        'ü': 'Ü', 'v': 'V', 'y': 'Y', 'z': 'Z'
+    }
+    return turkish_upper.get(word[0], word[0].upper()) + word[1:] if len(word) > 1 else word[0].upper()
+
+
 def normalize_unit_name(raw_name: str) -> str:
     """
     Ham birlik ismini standart bir formata dönüştürür.
     Örn: "3 ncü Tümen" -> "3. Tümen"
          "57 nci Alay" -> "57. Alay"
          "1. Kol." -> "1. Kolordu"
+         "111. ORDU" -> "111. Ordu"
     """
     if not raw_name:
         return ""
     
-    # 1. Temizlik
-    name = raw_name.strip()
+    # 0. Büyük/küçük harf normalizasyonu - önce hepsini küçük yap
+    name = raw_name.strip().lower()
     # Fazla boşlukları sil
     name = re.sub(r'\s+', ' ', name)
     
@@ -75,7 +90,7 @@ def normalize_unit_name(raw_name: str) -> str:
             if w[0].isdigit() and w.endswith('.'):
                 capitalized_words.append(w)
             else:
-                capitalized_words.append(w.capitalize())
+                capitalized_words.append(tr_capitalize(w))
                 
     final_name = " ".join(capitalized_words)
     

@@ -1,6 +1,7 @@
 import os
 import time
 import logging
+import threading
 import ollama
 import pypdfium2 as pdfium
 from PIL import Image
@@ -13,6 +14,10 @@ from src.utils.text_processing import post_process_text, calculate_confidence
 logger = logging.getLogger(__name__)
 
 class OCRService:
+    _instance = None
+    _lock = threading.Lock()
+    _client: Optional[ollama.Client] = None
+    
     OCR_PROMPT = (
         "You are an OCR engine. "
         "Extract all visible text from this image ONCE. "
@@ -21,32 +26,45 @@ class OCRService:
         "Return only the extracted text without any repetition."
     )
 
+    def __new__(cls):
+        with cls._lock:
+            if cls._instance is None:
+                cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    @property
+    def client(self) -> ollama.Client:
+        if self._client is None:
+            self._client = ollama.Client(timeout=settings.OCR_TIMEOUT)
+        assert self._client is not None
+        return self._client
+    
     def __init__(self):
-        self.client = ollama.Client(timeout=settings.OCR_TIMEOUT)
+        pass
 
     def _pdf_page_to_image(self, pdf_path: str, page_idx: int) -> str:
         """Converts a PDF page to an image file."""
         try:
             settings.TEMP_DIR.mkdir(exist_ok=True)
-            pdf = pdfium.PdfDocument(pdf_path)
-            page = pdf[page_idx]
-            bitmap = page.render(scale=settings.OCR_DPI / 72)
-            img = bitmap.to_pil()
-            pdf.close()
+            with open(pdf_path, 'rb') as pdf_file:
+                pdf = pdfium.PdfDocument(pdf_file)
+                page = pdf[page_idx]
+                bitmap = page.render(scale=int(settings.OCR_DPI / 72))
+                img = bitmap.to_pil()
 
-            if img.width > settings.OCR_MAX_IMAGE_WIDTH:
-                ratio = settings.OCR_MAX_IMAGE_WIDTH / img.width
-                img = img.resize(
-                    (settings.OCR_MAX_IMAGE_WIDTH, int(img.height * ratio)),
-                    Image.Resampling.LANCZOS,
-                )
+                if img.width > settings.OCR_MAX_IMAGE_WIDTH:
+                    ratio = settings.OCR_MAX_IMAGE_WIDTH / img.width
+                    img = img.resize(
+                        (settings.OCR_MAX_IMAGE_WIDTH, int(img.height * ratio)),
+                        Image.Resampling.LANCZOS,
+                    )
 
-            if img.mode != "RGB":
-                img = img.convert("RGB")
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
 
-            path = settings.TEMP_DIR / f"page_{page_idx}_{time.time()}.png"
-            img.save(path, "PNG")
-            return str(path)
+                path = settings.TEMP_DIR / f"page_{page_idx}_{time.time()}.png"
+                img.save(path, "PNG")
+                return str(path)
         except Exception as e:
             logger.error(f"Failed to convert page {page_idx} to image: {e}")
             raise
@@ -61,11 +79,17 @@ class OCRService:
                 options={
                     "temperature": settings.OCR_TEMPERATURE,
                     "num_predict": settings.OCR_NUM_PREDICT,
+                    "repeat_penalty": settings.OCR_REPETITION_PENALTY,
+                    "top_k": settings.OCR_TOP_K,
+                    "top_p": settings.OCR_TOP_P,
                 },
             )
             return response["response"].strip()
+        except ollama.ResponseError as e:
+            logger.error(f"Ollama error: {e}")
+            raise
         except Exception as e:
-            logger.error(f"OCR failed with model {model_name}: {e}")
+            logger.error(f"OCR error: {e}")
             raise
 
     def process_page(self, pdf_path: str, page_idx: int) -> PageResult:
@@ -127,9 +151,9 @@ class OCRService:
             raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
         try:
-            pdf = pdfium.PdfDocument(pdf_path)
-            total_pages = len(pdf)
-            pdf.close()
+            with open(pdf_path, 'rb') as pdf_file:
+                pdf = pdfium.PdfDocument(pdf_file)
+                total_pages = len(pdf)
         except Exception as e:
             raise Exception(f"Could not read PDF: {e}")
 
