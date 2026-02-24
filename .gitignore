@@ -93,6 +93,7 @@ venv.bak/
 # IDE Settings
 .idea/
 .vscode/
+.claude/
 *.swp
 *.swo
 
