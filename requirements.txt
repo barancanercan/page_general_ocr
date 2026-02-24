@@ -3,6 +3,5 @@ pypdfium2
 Pillow
 sentence-transformers>=3.0.0
 qdrant-client>=1.9.0
-gradio>=4.0.0
 streamlit>=1.30.0
 pandas

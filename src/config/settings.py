@@ -42,6 +42,3 @@ RAG_TOP_K: int = int(os.getenv("RAG_TOP_K", "8"))
 RAG_HISTORY_TURNS: int = int(os.getenv("RAG_HISTORY_TURNS", "4"))
 
 MIN_PARAGRAPH_LENGTH: int = int(os.getenv("MIN_PARAGRAPH_LENGTH", "200"))
-
-GRADIO_PORT: int = int(os.getenv("GRADIO_PORT", "7860"))
-GRADIO_TITLE: str = os.getenv("GRADIO_TITLE", "PageGeneralOCR Pro")
