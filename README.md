@@ -219,30 +219,55 @@
 ```
 page_general_ocr/
 ├── streamlit_app.py                # Streamlit arayüzü (Ana UI)
-├── src/
+├── requirements.txt                # Python bağımlılıkları
+├── .env.example                    # Örnek environment dosyası
+│
+├── src/                            # Ana kaynak kodu
+│   ├── __init__.py                 # Paket tanımı
 │   ├── main.py                     # Gradio arayüzü (Alternatif UI)
-│   ├── config/
-│   │   └── settings.py             # Yapılandırma parametreleri
-│   ├── agents/
-│   │   ├── rag_agent.py            # Ana RAG pipeline
+│   │
+│   ├── agents/                     # RAG ve veri işleme agentları
+│   │   ├── __init__.py
+│   │   ├── rag_agent.py            # Ana RAG pipeline (LLM entegrasyonu)
 │   │   ├── memory.py               # Hafıza sistemi (Kısa + Uzun vadeli)
 │   │   └── ingestion_agent.py      # PDF işleme ve indeksleme
-│   ├── services/
-│   │   ├── vector_db_service.py    # Qdrant vektör veritabanı
-│   │   ├── embedding_service.py    # Embedding ve re-ranking
-│   │   └── ocr_service.py          # PDF OCR işleme
-│   └── utils/
-│       ├── military_extraction.py   # Birlik varlık çıkarma
-│       ├── normalization.py        # Birlik adı normalize
-│       └── text_processing.py      # Metin işleme
+│   │
+│   ├── services/                   # Temel servisler
+│   │   ├── __init__.py
+│   │   ├── ocr_service.py          # PDF OCR işleme (Ollama qwen2.5vl)
+│   │   ├── embedding_service.py    # Metin embedding (sentence-transformers)
+│   │   └── vector_db_service.py    # Qdrant vektör veritabanı
+│   │
+│   ├── utils/                      # Yardımcı fonksiyonlar
+│   │   ├── __init__.py
+│   │   ├── text_processing.py      # Metin temizleme ve paragraf ayırma
+│   │   ├── normalization.py        # Askeri birim ismi normalizasyonu
+│   │   └── military_extraction.py  # Askeri birim çıkarma
+│   │
+│   ├── config/                     # Konfigürasyon
+│   │   ├── __init__.py
+│   │   ├── settings.py             # Ana ayarlar (model, path, timeout)
+│   │   └── constants.py            # Sabit değerler
+│   │
+│   └── core/                       # Veri modelleri
+│       ├── __init__.py
+│       └── models.py               # Pydantic veri modelleri
+│
+├── scripts/                        # Bakım ve yardımcı scriptler
+│   ├── __init__.py
+│   ├── cleanup.py                  # Geçici dosya temizliği
+│   ├── reprocess_repetitions.py    # OCR tekrar sorunlarını düzelt
+│   └── fix_remaining_repetitions.py # Kalan tekrarları temizle
+│
 ├── data/
 │   ├── memory/                     # Uzun vadeli hafıza
-│   │   ├── military_corpus.json   # Tarihi bilgiler
-│   │   └── military_ontology.json # Askeri terimler
+│   │   ├── military_corpus.json    # Tarihi bilgiler
+│   │   └── military_ontology.json  # Askeri terimler
 │   └── raw/
 │       └── books/
-│           └── *.pdf               # Kaynak kitaplar
-└── qdrant_data/                    # Qdrant veritabanı dosyaları
+│           └── *.pdf               # Kaynak kitaplar (Git'e dahil değil)
+│
+└── qdrant_data/                    # Qdrant veritabanı (~20,000 paragraf)
 ```
 
 ---

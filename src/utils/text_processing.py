@@ -21,13 +21,13 @@ def calculate_confidence(text: str) -> float:
         score = min(1.0, score + 0.1)
     return round(score, 3)
 
-def detect_tail_repetition(text: str, min_phrase_len: int = 2, min_repeats: int = 4) -> Tuple[str, bool, int, str]:
+def detect_tail_repetition(text: str, min_phrase_len: int = 2, min_repeats: int = 3) -> Tuple[str, bool, int, str]:
     """
     OCR'ın paragraf sonunda takılıp kaldığı durumları tespit eder.
     Örnek: "yardımcı olur yardımcı olur yardımcı olur yardımcı olur"
 
     Metnin SON kısmına odaklanır ve iteratif temizleme yapar.
-    En az 4 ardışık tekrar gerektirir (doğal tekrarları yok sayar).
+    En az 3 ardışık tekrar gerektirir (doğal tekrarları yok sayar).
 
     Returns: (cleaned_text, has_repetition, repeat_count, repeated_phrase)
     """
@@ -48,8 +48,8 @@ def detect_tail_repetition(text: str, min_phrase_len: int = 2, min_repeats: int 
         if total_words < 10:
             break
 
-        # Son 100 kelimeyi kontrol et (daha geniş pencere)
-        tail_size = min(100, total_words)
+        # Son 150 kelimeyi kontrol et (daha geniş pencere - uzun tekrarlar için)
+        tail_size = min(150, total_words)
         tail_start = total_words - tail_size
         tail_words = words[tail_start:]
 
@@ -58,11 +58,17 @@ def detect_tail_repetition(text: str, min_phrase_len: int = 2, min_repeats: int 
         repeated_phrase = ""
         best_cut_point = len(tail_words)
 
-        # 2-5 kelimelik phrase'leri kontrol et
-        for phrase_len in range(min_phrase_len, min(6, len(tail_words) // min_repeats + 1)):
+        # 2-20 kelimelik phrase'leri kontrol et (uzun tekrarlar için genişletildi)
+        max_phrase_len = min(20, len(tail_words) // min_repeats)
+        for phrase_len in range(min_phrase_len, max_phrase_len + 1):
             i = 0
             while i <= len(tail_words) - phrase_len * min_repeats:
                 phrase = ' '.join(tail_words[i:i + phrase_len]).lower()
+
+                # Çok kısa veya anlamsız phrase'leri atla
+                if len(phrase) < 10:
+                    i += 1
+                    continue
 
                 # Bu phrase kaç kez ardışık tekrar ediyor?
                 repeat_count = 1

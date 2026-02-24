@@ -1,10 +1,10 @@
 import re
 
 # Türkçe sıra ekleri (inci, üncü, nci, ncü, vs.)
-_ORDINAL_PATTERN = r"['\']?\s*(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü)"
+_ORDINAL_PATTERN = r"['\']?\s*(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü|üncü|ıncı)"
 
 # Birlik tipleri
-_UNIT_TYPES = r'(?:Tümen|Kolordu|Ordu|Alay|Tugay|Tabur|Bölük|Batarya)'
+_UNIT_TYPES = r'(?:Tümen|Kolordu|Ordu|Alay|Tugay|Tabur|Bölük|Batarya|Süvari|Piyade)'
 
 
 def tr_capitalize(word: str) -> str:
@@ -30,6 +30,8 @@ def normalize_unit_name(raw_name: str) -> str:
          "111. ORDU" -> "111. Ordu"
          "ı. Kolordu" -> "1. Kolordu" (OCR hatası: ı -> 1)
          "i. Kolordu" -> "1. Kolordu" (OCR hatası: i -> 1)
+         "1nci Ordu" -> "1. Ordu" (OCR: arada boşluk yok)
+         "3ncü Tümen" -> "3. Tümen" (OCR: nokta yok)
     """
     if not raw_name:
         return ""
@@ -39,6 +41,15 @@ def normalize_unit_name(raw_name: str) -> str:
     # Fazla boşlukları sil
     name = re.sub(r'\s+', ' ', name)
 
+    # 0.1. OCR hataları: "nci" -> "nci", "ncı" normalizasyonu
+    # "1nci" -> "1 nci" (rakam ile yazı arasında boşluk yok)
+    name = re.sub(r'(\d)([a-zA-ZçğıöşüÇĞİÖŞÜ]{2,})', r'\1 \2', name)
+    
+    # 0.2. "nci", "ncı", "ncü", "ncu" -> "nci" standardizasyonu
+    name = name.replace('ı', 'i').replace('ı', 'i')
+    name = re.sub(r'nc[ıi]', 'nci', name)
+    name = re.sub(r'ünc', 'unci', name)
+
     # 1. OCR hatalarını düzelt: "ı." veya "i." bazen "1." demek
     # "ı. Kolordu", "i. Kolordu" -> "1. Kolordu"
     # Birlik tipinin hemen önüne geliyorsa OCR hatası olur
@@ -47,7 +58,7 @@ def normalize_unit_name(raw_name: str) -> str:
 
     # "1 ncü", "1 nci", "1 ncı" vb. -> "1." (sıra eklerini kaldır)
     # Alternatif olarak, sıra eki patternini genişlet
-    _ORDINAL_WITH_SPACE = r"\s+(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü)"
+    _ORDINAL_WITH_SPACE = r"\s+(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü|unci|uncı)"
     name = re.sub(rf'(\d+){_ORDINAL_WITH_SPACE}', r'\1.', name, flags=re.IGNORECASE)
     
     # 2a. Sıra eklerini kaldır ve nokta ekle
@@ -56,7 +67,7 @@ def normalize_unit_name(raw_name: str) -> str:
 
     # 2a-2. Nokta sonrası bağımsız sıra ekini kaldır
     # "57. nci Tümen", "57. Ncü Tümen" -> "57. Tümen"
-    _STANDALONE_ORDINAL = r'\b(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü)\b'
+    _STANDALONE_ORDINAL = r'\b(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü|unci|uncı)\b'
     name = re.sub(rf'(\d+\.)\s*{_STANDALONE_ORDINAL}\s+', r'\1 ', name, flags=re.IGNORECASE)
 
     # 2b. Ek olmadan "57 Alay" -> "57. Alay"

@@ -102,6 +102,15 @@ output/
 .temp_ocr_run/
 test_results/
 
+# Qdrant lock files
+qdrant_data/.lock
+qdrant_data/*/.lock
+
+# Windows artifacts
+nul
+Thumbs.db
+desktop.ini
+
 # --- ÖZEL AYARLAR ---
 
 # 1. Veritabanını Koru (Git'e gönder)
