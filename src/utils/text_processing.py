@@ -26,7 +26,7 @@ def detect_tail_repetition(text: str, min_phrase_len: int = 2, min_repeats: int 
     OCR'ın paragraf sonunda takılıp kaldığı durumları tespit eder.
     Örnek: "yardımcı olur yardımcı olur yardımcı olur yardımcı olur"
 
-    Sadece metnin SON kısmına odaklanır (son 60 kelime).
+    Metnin SON kısmına odaklanır ve iteratif temizleme yapar.
     En az 4 ardışık tekrar gerektirir (doğal tekrarları yok sayar).
 
     Returns: (cleaned_text, has_repetition, repeat_count, repeated_phrase)
@@ -34,61 +34,74 @@ def detect_tail_repetition(text: str, min_phrase_len: int = 2, min_repeats: int 
     if not text:
         return "", False, 0, ""
 
-    words = text.split()
-    total_words = len(words)
+    current_text = text
+    total_has_repetition = False
+    total_repetition_count = 0
+    last_repeated_phrase = ""
 
-    if total_words < 10:
-        return text, False, 0, ""
+    # Iteratif temizleme - tekrar kalmayıncaya kadar devam et
+    max_iterations = 10  # Sonsuz döngüyü önle
+    for iteration in range(max_iterations):
+        words = current_text.split()
+        total_words = len(words)
 
-    # Sadece son 60 kelimeyi kontrol et (OCR genelde sonda takılır)
-    tail_size = min(60, total_words)
-    tail_start = total_words - tail_size
-    tail_words = words[tail_start:]
-
-    has_repetition = False
-    repetition_count = 0
-    repeated_phrase = ""
-    best_cut_point = len(tail_words)  # Kesim noktası
-
-    # 2-5 kelimelik phrase'leri kontrol et
-    for phrase_len in range(min_phrase_len, min(6, len(tail_words) // min_repeats + 1)):
-        i = 0
-        while i <= len(tail_words) - phrase_len * min_repeats:
-            phrase = ' '.join(tail_words[i:i + phrase_len]).lower()
-
-            # Bu phrase kaç kez ardışık tekrar ediyor?
-            repeat_count = 1
-            j = i + phrase_len
-            while j + phrase_len <= len(tail_words):
-                next_phrase = ' '.join(tail_words[j:j + phrase_len]).lower()
-                if next_phrase == phrase:
-                    repeat_count += 1
-                    j += phrase_len
-                else:
-                    break
-
-            # En az min_repeats (4) ardışık tekrar varsa bu gerçek bir OCR hatası
-            if repeat_count >= min_repeats:
-                has_repetition = True
-                repeated_phrase = phrase
-                # Tekrar eden kısmın başlangıcını işaretle
-                cut_at = i + phrase_len  # Sadece ilk tekrarı tut
-                if cut_at < best_cut_point:
-                    best_cut_point = cut_at
-                    repetition_count = repeat_count - 1
-                break
-
-            i += 1
-
-        if has_repetition:
+        if total_words < 10:
             break
 
-    if has_repetition:
-        # Metnin başını koru, sadece tekrar eden kuyruk kısmını kes
-        clean_words = words[:tail_start] + tail_words[:best_cut_point]
-        return ' '.join(clean_words), True, repetition_count, repeated_phrase
+        # Son 100 kelimeyi kontrol et (daha geniş pencere)
+        tail_size = min(100, total_words)
+        tail_start = total_words - tail_size
+        tail_words = words[tail_start:]
 
-    return text, False, 0, ""
+        has_repetition = False
+        repetition_count = 0
+        repeated_phrase = ""
+        best_cut_point = len(tail_words)
+
+        # 2-5 kelimelik phrase'leri kontrol et
+        for phrase_len in range(min_phrase_len, min(6, len(tail_words) // min_repeats + 1)):
+            i = 0
+            while i <= len(tail_words) - phrase_len * min_repeats:
+                phrase = ' '.join(tail_words[i:i + phrase_len]).lower()
+
+                # Bu phrase kaç kez ardışık tekrar ediyor?
+                repeat_count = 1
+                j = i + phrase_len
+                while j + phrase_len <= len(tail_words):
+                    next_phrase = ' '.join(tail_words[j:j + phrase_len]).lower()
+                    if next_phrase == phrase:
+                        repeat_count += 1
+                        j += phrase_len
+                    else:
+                        break
+
+                # En az min_repeats ardışık tekrar varsa bu gerçek bir OCR hatası
+                if repeat_count >= min_repeats:
+                    has_repetition = True
+                    repeated_phrase = phrase
+                    cut_at = i + phrase_len  # Sadece ilk tekrarı tut
+                    if cut_at < best_cut_point:
+                        best_cut_point = cut_at
+                        repetition_count = repeat_count - 1
+                    break
+
+                i += 1
+
+            if has_repetition:
+                break
+
+        if has_repetition:
+            total_has_repetition = True
+            total_repetition_count += repetition_count
+            last_repeated_phrase = repeated_phrase
+            # Temizle ve tekrar kontrol et
+            clean_words = words[:tail_start] + tail_words[:best_cut_point]
+            current_text = ' '.join(clean_words)
+        else:
+            # Tekrar yok, çık
+            break
+
+    return current_text, total_has_repetition, total_repetition_count, last_repeated_phrase
 
 
 def detect_phrase_repetition(text: str, min_phrase_len: int = 2, max_repeats: int = 4) -> Tuple[str, bool, int]:
