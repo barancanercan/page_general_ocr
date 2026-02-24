@@ -35,7 +35,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    KULLANICI ARAYÜZÜ (Gradio / Streamlit)                      │
+│                         KULLANICI ARAYÜZÜ (Streamlit)                          │
 │  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │                    VERİ MÜFETTİŞİ SEKMESİ                              │    │
 │  │  ┌─────────────┐    ┌─────────────┐    ┌──────────────────────────┐   │    │
@@ -224,7 +224,6 @@ page_general_ocr/
 │
 ├── src/                            # Ana kaynak kodu
 │   ├── __init__.py                 # Paket tanımı
-│   ├── main.py                     # Gradio arayüzü (Alternatif UI)
 │   │
 │   ├── agents/                     # RAG ve veri işleme agentları
 │   │   ├── __init__.py
@@ -307,17 +306,10 @@ ollama pull qwen3:8b
 
 ### 4. Çalıştırma
 
-**Streamlit (Önerilen):**
 ```bash
 streamlit run streamlit_app.py
 ```
 Tarayıcınızda **`http://localhost:8501`** adresine giderek arayüze erişebilirsiniz.
-
-**Gradio (Alternatif):**
-```bash
-python src/main.py
-```
-Gradio arayüzü için **`http://localhost:7860`** adresini kullanın.
 
 ---
 
@@ -383,9 +375,8 @@ KURALLAR:
 | `CHAT_MODEL` | Sohbet LLM modeli | `gemma3:latest` |
 | `OCR_TIMEOUT` | OCR işlemi timeout (saniye) | `1200` |
 | `OCR_DPI` | Tarama çözünürlüğü | `150` |
-| `RAG_FETCH_K` | İlk aramada getirilecek belge sayısı | `20` |
-| `RAG_TOP_K` | LLM'e gönderilecek en iyi belge sayısı | `5` |
-| `GRADIO_PORT` | Gradio sunucu portu | `7860` |
+| `RAG_FETCH_K` | İlk aramada getirilecek belge sayısı | `30` |
+| `RAG_TOP_K` | LLM'e gönderilecek en iyi belge sayısı | `8` |
 
 ### settings.py Parametreleri
 
