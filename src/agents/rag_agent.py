@@ -15,31 +15,66 @@ logger = logging.getLogger(__name__)
 
 class RAGAgent:
 
-    SYSTEM_PROMPT = """Türk İstiklal Harbi uzmanı askeri tarih analistisin. Görevi: ANALİZ ET, KARAR VER, GEREKÇELENDIR.
+    SYSTEM_PROMPT = """Rol: Türk İstiklal Harbi uzmanı askeri tarih analistisin
+Temel Görev: Hızlı analiz et → Askeri kararı değerlendir → Doktrine dayandır → Kaynakları belirt
 
-CEVAP FORMATI:
+=== YANIT YAPISI (Zorunlu) ===
 ## Durum Analizi
-- Koşullar ve kritik faktörler
+- Soruda belirtilen koşullar/başlangıç durumu
+- Tarafların güç durumu ve kaynakları
+- Kritik faktörler ve kısıtlamalar
+- Taktik/stratejik avantajlar-dezavantajlar
 
 ## Değerlendirme
-- Askeri yaklaşım ve strateji
-- Alternatifler (varsa)
+- Askeri açıdan uygun yaklaşımlar ve stratejiler
+- Doktrine uygun alternatif seçenekler
+- Başarı-başarısızlık analizi
+- Dönem koşullarında gerçekçi kısıtlamalar
 
 ## Gerekçe
-- Askeri mantık ve doktrin bağlantısı
+- Türk Kara Kuvvetleri doktrinine ve askeri mantığa referanslar
+- Neden bu strategi/taktik en uygun olduğu
+- Dönemin (1919-1923) savaş koşulları
+- İlgili operasyonlardan dersler
 
 ## Kaynaklar
-- (Kitap, Sayfa) formatında
+Format: (Kitap Adı, Sayfa X) - her atıf için kullan
 
-SORU TİPLERİ:
-- Faktüel (kim/ne/nerede): Doğrudan bilgi + kaynak
-- Analitik (nasıl/strateji): Durum → Karar → Gerekçe
-- Nedensel (neden): Koşullar → Sebep-Sonuç
-- Karşılaştırmalı: Tablo + analiz
+=== SORU TİPLERİNE GÖRE YANIT STİLİ ===
+FAKTÜEL (kim/ne/nerede/ne zaman):
+  → Doğrudan, kesin cevap + kaynak
+  → Tarih, isim, sayı: tam doğruluk gerekli
 
-DOKTRİNLER: Mevzi/hareketli savunma, kuşatma, yarma, sıklet merkezi, ikmal hattı.
+ANALITIK (nasıl/ne yapılmalı/strateji nedir):
+  → Durum → Seçenekler → Tercih nedeni → Doktrin bağlantısı
+  → Alternatifler karşılaştırarak sunma
 
-ÜSLUP: Askeri, kesin, analitik. Her bilgiye kaynak ekle."""
+NEDENSEL (neden/niçin/sebebi):
+  → Bağlamsal koşullar → Doğrudan neden → Dolaylı faktörler
+  → Sonuçları ve etkileri açıkla
+
+KARŞILAŞTIRMALI (fark/hangisi daha/avantaj):
+  → Taraf A ve B'yi yan yana analiz et
+  → Spesifik avantaj/dezavantajları say
+  → Dönem koşullarında güç dengesi değerlendirme
+
+=== ASKERİ DOKTRİN KULLANMA REHBERI ===
+Savunma Doktrini: Mevzi savunması, hareketli savunma, geciktirme harekatı, kademeli geri çekilme
+Taarruz Doktrini: Cephe taarruzu, flanş ve sahil kıstırması, kuşatma, yarma harekatı
+Stratejik Prensip: Sıklet merkezi, hava üstünlüğü, içteki hatlar, sürpriz, momentum
+
+=== YANIT ÜSLUBü ===
+- Profesyonel, kesin ve analitik dil kullan
+- Her önemli iddia için kaynak atıf (Kitap, Sayfa)
+- Sayıları ve tarihler mümkün olan yerde belirt
+- Belirsizlikleri "bulunmuyor" veya "kesin bilgi yok" şeklinde belirt
+- Çelişkili kaynaklar varsa her iki görüşü sun
+- Yazım ve dilbilgisi hatası yapma
+
+=== KISA CEVAP PROTOKOLÜ ===
+Cevap 300-400 kelimelik sorular için 200-250 kelimede bitir
+Cevap 100-200 kelimelik sorular için 100-150 kelimede bitir
+Çok karmaşık sorular için kısaltmadan yapı uyarını devam ettir"""
 
 
     def __init__(self):
@@ -99,17 +134,27 @@ DOKTRİNLER: Mevzi/hareketli savunma, kuşatma, yarma, sıklet merkezi, ikmal ha
         return f"({book}, Sayfa {page})"
 
     def _build_context(self, hits: List[Dict[str, Any]]) -> str:
+        """
+        Vector DB'den dönen sonuçlardan içerik oluştur.
+        Zaten sıralanmış (en yüksek skor önce), sadece formatla.
+        """
         if not hits:
-            return "" 
-        
+            return ""
+
         parts = []
-        for hit in hits:
+        for idx, hit in enumerate(hits, 1):
             book = hit.get("book_title", "Bilinmeyen Kitap")
             page = hit.get("page_num", "?")
             text = hit.get('text', '')
-            parts.append(f"[Kaynak: {book}, Sayfa: {page}]\n{text}")
-            
-        return "\n\n---\n\n".join(parts)
+            rerank_score = hit.get("rerank_score", 0.0)
+
+            # Sıra ve kaynak bilgisi
+            priority = "▲ YÜKSEKler İLGİ" if rerank_score > 0.7 else "→ İLGİLİ"
+            source_line = f"[{idx}. {priority}] Kaynak: {book}, Sayfa: {page}"
+
+            parts.append(f"{source_line}\n{text}")
+
+        return "\n\n────────────────────\n\n".join(parts)
 
     def _diversify_results(self, candidates: List[Dict[str, Any]], top_k: int) -> List[Dict[str, Any]]:
         if not candidates:
@@ -191,14 +236,21 @@ DOKTRİNLER: Mevzi/hareketli savunma, kuşatma, yarma, sıklet merkezi, ikmal ha
             final_hits = self._diversify_results(candidates, settings.RAG_TOP_K)
             
             context = self._build_context(final_hits)
-            
+
             if not context:
-                 return "Verilen kaynaklarda bu konu hakkında spesifik bir bilgi bulunmamaktadır.", [], timing
+                return "Verilen kaynaklarda bu konu hakkında spesifik bir bilgi bulunmamaktadır.", [], timing
 
-            user_prompt = f"""Kullanıcı Sorusu: "{question}"
+            user_prompt = f"""════════════════════════════════════════════════════════════
+≫≫ KULLANICI SORUSU: "{question}" ≪≪
+════════════════════════════════════════════════════════════
 
---- KAYNAK METİNLER ---
+=== İLGİLİ KAYNAK METİNLER ===
 {context}
+
+════════════════════════════════════════════════════════════
+Yanıt Format: Durum Analizi | Değerlendirme | Gerekçe | Kaynaklar
+Doğruluk: Maksimum | Doktrin: Entegre | Kaynaklar: Her Atıfta
+════════════════════════════════════════════════════════════
 """
             messages = [
                 {"role": "system", "content": self.SYSTEM_PROMPT},
@@ -253,40 +305,74 @@ DOKTRİNLER: Mevzi/hareketli savunma, kuşatma, yarma, sıklet merkezi, ikmal ha
             
             decision_section = ""
             if decision_analysis["requires_decision"]:
-                decision_section = f"""
-=== ASKERİ DURUM ANALİZİ ===
-Soru Tipi: {query_classification['type'].upper()}
-Odak Noktası: {decision_analysis['analysis'].get('focus', 'N/A')}
+                # Soru türü ve odak noktasını belirt
+                query_type = query_classification['type'].upper()
+                query_confidence = query_classification.get('confidence', 0.0)
+                focus = decision_analysis['analysis'].get('focus', 'GENEL')
 
+                decision_section = f"""=== ASKERİ DURUM ANALİZİ ===
+Soru Tipi: {query_type} (Güven: {query_confidence:.0%})
+Stratejik Odak: {focus}
 """
-                if decision_analysis.get("decisions"):
-                    decision_section += "Karar Seçenekleri:\n"
-                    for i, decision in enumerate(decision_analysis["decisions"], 1):
-                        decision_section += f"  {i}. {decision.get('type', 'N/A')}\n"
-                        for opt in decision.get("sub_options", []):
-                            decision_section += f"     - {opt}\n"
-                
-                if decision_analysis.get("reasoning"):
-                    decision_section += "\nAskeri Değerlendirme:\n"
-                    for reason in decision_analysis["reasoning"]:
-                        decision_section += f"  • {reason}\n"
 
-            user_prompt = f"""Kullanıcı Soruları ve Cevapları:
+                # Kararlar ve seçenekler
+                if decision_analysis.get("decisions"):
+                    decision_section += "\nÖnerilen Karar Seçenekleri:\n"
+                    for i, decision in enumerate(decision_analysis["decisions"], 1):
+                        decision_type = decision.get('type', 'N/A')
+                        rule_name = decision.get('rule_name', '')
+
+                        # Karar başlığı
+                        decision_section += f"  {i}. {decision_type}"
+                        if rule_name:
+                            decision_section += f" [{rule_name}]"
+                        decision_section += "\n"
+
+                        # Alt seçenekler
+                        for opt in decision.get("sub_options", []):
+                            decision_section += f"     → {opt}\n"
+
+                        # Doktrin referansı
+                        doctrine = decision.get('doctrine_ref', '')
+                        if doctrine:
+                            decision_section += f"     (Doktrin: {doctrine})\n"
+
+                # Askeri gerekçe
+                if decision_analysis.get("reasoning"):
+                    decision_section += "\nAskeri Mantık ve Gerekçe:\n"
+                    for reason in decision_analysis["reasoning"]:
+                        # Eğer zaten bullet point içermiyorsa ekle
+                        if not reason.startswith("•"):
+                            decision_section += f"  • {reason}\n"
+                        else:
+                            decision_section += f"  {reason}\n"
+
+            # Çok katmanlı prompt yapısı: geçmişten yeni soruya doğru yoğunlaş
+            user_prompt = f"""=== KONUŞMA BÖ LÜMü ===
+Konuşmanın Tarihi (son {len(history or []) if history else 0} tur):
 {conversation_history}
 
-Kullanıcının Önceki Sorularından Elde Edilen Bilgiler:
+=== ÖNCEKİ BİLGİ BAĞLAMI ===
+(Kullanıcının bu konuşmada daha önce sorduğu konulardan elde edilen bilgiler)
 {prior_context}
 
-=== UZUN VADELİ HAFIZA (Tarihi Corpus + Ontology) ===
+=== UZUN VADELİ ASKERİ TARİH BİLGİSİ ===
+(Türk İstiklal Harbi corpus, ontoloji ve stratejik kararlar)
 {long_term_context}
 
 {decision_section}
 
----
-YENİ KULLANICI SORUSU: "{question}"
+════════════════════════════════════════════════════════════
+≫≫ YENİ KULLANICI SORUSU: "{question}" ≪≪
+════════════════════════════════════════════════════════════
 
---- KAYNAK METİNLER ---
+=== TEMEL KAYNAKLAR (En İlgili Dokumentler) ===
 {context}
+
+════════════════════════════════════════════════════════════
+Yanıt Format: Durum Analizi | Değerlendirme | Gerekçe | Kaynaklar
+Yanıt Dili: Türkçe | Stili: Askeri-Analitik | Doğruluk: Maksimum
+════════════════════════════════════════════════════════════
 """
 
             messages = [
@@ -377,71 +463,154 @@ Konuşma:
             logger.warning(f"Summary creation failed: {e}")
 
     def _get_filtered_items(self, data: List[Dict[str, Any]], question: str = "") -> List[Dict[str, Any]]:
-        """Returns filtered and scored items for source extraction."""
-        if not data or not question:
+        """
+        Filtreleme ve puanlandırma:
+        - Anahtar kelimelere dayanarak puan ata
+        - En uygun kaynaklar önce
+        - Toplamda 30 öğe, minimum 3 kaynaktan
+        """
+        if not data:
+            return []
+
+        if not question or question.strip() == "":
             return data[:30] if data else []
 
         question_lower = question.lower()
         keywords = self._extract_keywords(question_lower)
 
+        if not keywords:
+            # Anahtar kelime yok ise ilk 30'u döndür
+            return data[:30]
+
         scored_data = []
         for item in data:
             text = item.get("Metin", "").lower()
             units = item.get("Birlikler", "").lower()
+            book_title = item.get("Kitap", "").lower()
 
             score = 0
+
+            # 1. Metin içinde anahtar kelimeler (temel puanlama)
+            keyword_matches = 0
             for kw in keywords:
                 if kw in text:
                     score += 3
-                if kw in units:
-                    score += 5
+                    keyword_matches += 1
 
-            book_title = item.get("Kitap", "").lower()
+            # 2. Birlik isimleri (çok önemli)
+            for kw in keywords:
+                if kw in units:
+                    score += 5  # Birlik eşleşmesi daha yüksek puan
+
+            # 3. Kitap başlığında eşleşme
             if any(kw in book_title for kw in keywords):
                 score += 2
 
-            scored_data.append((score, item))
+            # 4. Çoklu anahtar kelime eşleşmesi (bonus)
+            if keyword_matches >= 2:
+                score += keyword_matches * 2
 
+            # 5. Metin uzunluğu (daha uzun = potansiyel daha çok bilgi)
+            text_len = len(text)
+            if text_len > 200:
+                score += 2
+            elif text_len > 500:
+                score += 4
+
+            # Skoru ekle (sonra LLM'ye göndermek için)
+            item_copy = item.copy()
+            item_copy["_score"] = score
+            scored_data.append((score, item_copy))
+
+        # Sıra: en yüksek skor önce
         scored_data.sort(key=lambda x: x[0], reverse=True)
+
+        # İlk 30'u döndür (en uygun olanlar)
         return [item for _, item in scored_data[:30]]
 
     def _build_context_from_data(self, data: List[Dict[str, Any]], question: str = "") -> str:
+        """
+        İlgili verileri en uygun sıraya göre düzenle.
+        En yüksek skor önce, duplikasyon yok, kaynaklar net belirtilmiş.
+        """
         if not data:
             return ""
 
-        # Use shared filtering method
+        # Filtrele ve puanla
         filtered_data = self._get_filtered_items(data, question) if question else data[:30]
 
+        # Sırasını koru (already sorted by score in _get_filtered_items)
         parts = []
         seen_texts = set()
+        source_count = 0
+        max_sources = 10  # En fazla 10 farklı kaynak parçası
+
         for item in filtered_data:
+            if source_count >= max_sources:
+                break
+
             text = item.get("Metin", "")
-            if text in seen_texts:
+            if not text or text in seen_texts:
                 continue
+
             seen_texts.add(text)
 
             book = item.get("Kitap", "Bilinmeyen Kitap")
             page = item.get("Sayfa", "?")
-            parts.append(f"[Kaynak: {book}, Sayfa: {page}]\n{text}")
+            relevance = item.get("_score", 0)
 
-        return "\n\n---\n\n".join(parts)
+            # Öncelik göstergesi: yüksek skor kaynaklar önce gelsin
+            source_prefix = ""
+            if relevance > 10:
+                source_prefix = "[✓ Yüksek İlgi] "  # En alakalı
+            elif relevance > 5:
+                source_prefix = "[→ Orta İlgi] "    # Destek bilgisi
+
+            source_entry = f"{source_prefix}[Kaynak: {book}, Sayfa: {page}]\n{text}"
+            parts.append(source_entry)
+            source_count += 1
+
+        if not parts:
+            return ""
+
+        # Parçaları net ayırıcılarla birleştir
+        return "\n\n────────────────────\n\n".join(parts)
 
     def _extract_keywords(self, text: str) -> List[str]:
+        """
+        Sorgudan anahtar kelimeleri çıkar.
+        Kısa, yaygın kelimelerden arındır, orijinal sırasını koru.
+        """
         stop_words = {
-            'bir', 've', 'ile', 'için', 'hakkında', 'ne', 'nasıl', 'neden', 'nereye',
-            'kim', 'hangi', 'bu', 'şu', 'mi', 'mı', 'mu', 'mü', 'da', 'de',
+            # Soru kelimeleri
+            'ne', 'nasıl', 'neden', 'nereye', 'kim', 'hangi', 'ne kadar',
+            # Bağlaçlar
+            'bir', 've', 'ile', 'için', 'hakkında', 'bu', 'şu',
             'ya', 'veya', 'ya da', 'ama', 'fakat', 'lakin', 'ancak', 'çünkü',
-            'zira', 'oysa', 'öyleyse', 'demek', 'ki', 'işte', 'hani', 'ayette', 'ey'
+            'zira', 'oysa', 'öyleyse', 'demek', 'ki',
+            # Ek ve partiküller
+            'mi', 'mı', 'mu', 'mü', 'da', 'de', 'dı', 'di', 'du', 'dü',
+            'mi?', 'mı?', 'mu?', 'mü?',
+            # Diğer
+            'işte', 'hani', 'ayette', 'ey', 'ben', 'sen', 'o', 'biz', 'siz'
         }
-        
-        words = text.replace('?', ' ').replace('.', ' ').replace(',', ' ').replace(':', ' ').split()
-        keywords = [w for w in words if len(w) > 2 and w not in stop_words]
-        
+
+        # Temizle ve böl
+        text_clean = text.replace('?', ' ').replace('.', ' ').replace(',', ' ').replace(':', ' ')
+        words = text_clean.split()
+
+        # Filtreleme: uzunluk > 2, stop word değil, Türkçe karakter içer
+        keywords = [
+            w.lower() for w in words
+            if len(w) > 2 and w.lower() not in stop_words
+        ]
+
+        # Tekrarları kaldır ama sırayı koru
         unique_keywords = []
         seen = set()
         for kw in keywords:
             if kw not in seen:
                 unique_keywords.append(kw)
                 seen.add(kw)
-        
-        return unique_keywords[:15]
+
+        return unique_keywords[:20]  # En fazla 20 anahtar kelime

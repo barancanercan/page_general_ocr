@@ -28,14 +28,27 @@ def normalize_unit_name(raw_name: str) -> str:
          "57 nci Alay" -> "57. Alay"
          "1. Kol." -> "1. Kolordu"
          "111. ORDU" -> "111. Ordu"
+         "ı. Kolordu" -> "1. Kolordu" (OCR hatası: ı -> 1)
+         "i. Kolordu" -> "1. Kolordu" (OCR hatası: i -> 1)
     """
     if not raw_name:
         return ""
-    
+
     # 0. Büyük/küçük harf normalizasyonu - önce hepsini küçük yap
     name = raw_name.strip().lower()
     # Fazla boşlukları sil
     name = re.sub(r'\s+', ' ', name)
+
+    # 1. OCR hatalarını düzelt: "ı." veya "i." bazen "1." demek
+    # "ı. Kolordu", "i. Kolordu" -> "1. Kolordu"
+    # Birlik tipinin hemen önüne geliyorsa OCR hatası olur
+    name = re.sub(rf'^[ıi]\.(\s+(?:{_UNIT_TYPES}))', r'1.\1', name, flags=re.IGNORECASE)
+    name = re.sub(rf'(\s)[ıi]\.(\s+(?:{_UNIT_TYPES}))', r'\g<1>1.\2', name, flags=re.IGNORECASE)
+
+    # "1 ncü", "1 nci", "1 ncı" vb. -> "1." (sıra eklerini kaldır)
+    # Alternatif olarak, sıra eki patternini genişlet
+    _ORDINAL_WITH_SPACE = r"\s+(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü)"
+    name = re.sub(rf'(\d+){_ORDINAL_WITH_SPACE}', r'\1.', name, flags=re.IGNORECASE)
     
     # 2a. Sıra eklerini kaldır ve nokta ekle
     # "3 ncü", "57 inci", "1'inci" -> "3.", "57.", "1."
