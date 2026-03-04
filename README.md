@@ -1,588 +1,308 @@
-# 🛡️ PageGeneralOCR: Askeri Tarih İstihbarat Platformu
+<p align="center">
+  <img src="logo.png" alt="PageGeneral Logo" width="120">
+</p>
 
-![Project Status](https://img.shields.io/badge/Status-Production%20Ready-green)
+# PageGeneral
+
 ![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-**PageGeneralOCR**, taranmış tarihi askeri belgeleri (PDF) işleyerek dijitalleştiren, anlamlandıran ve bu belgeler üzerinde yapay zeka destekli istihbarat sorgulamaları yapılmasına olanak tanıyan, kurumsal seviyede bir RAG (Retrieval-Augmented Generation) platformudur.
+**PageGeneral**, taranmis tarihi askeri belgeleri (PDF) isleyerek dijitallestiren, anlamlandiran ve bu belgeler uzerinde yapay zeka destekli sorgulama yapilmasina olanak taniyan bir RAG (Retrieval-Augmented Generation) platformudur.
 
-Özellikle **Türk İstiklal Harbi** gibi karmaşık, eski Türkçe terimler ve askeri terminoloji içeren belgeler üzerinde yüksek doğrulukla çalışmak üzere optimize edilmiştir.
-
----
-
-## 🌟 Temel Yetenekler
-
-### 1. 🔍 Veri Müfettişi - Yapay Zeka Asistan
-*   **Birlik Odaklı Sorgulama:** Seçtiğiniz birlik (tümen, alay, kolordu) verileri getirilir ve yapay zeka bu veriler üzerinden sorularınızı yanıtlar.
-*   **Sorgu-Anlam Eşleştirme:** Sorulan soruya en uygun kaynakları önceliklendiren akıllı filtreleme sistemi.
-*   **Bağlamsal Hafıza:** Konuşma geçmişini ve kullanıcının önceki sorularını hatırlayarak tutarlı yanıtlar üretir.
-
-### 2. 🧠 Çok Katmanlı Hafıza Sistemi
-*   **Kısa Vadeli Hafıza:** Mevcut oturumdaki son 5 mesajdan itibaren konuşma bağlamını korur.
-*   **Uzun Vadeli Hafıza:** Tarihi corpus ve askeri ontology ile zenginleştirilmiş bilgi tabanı.
-*   **Oturum Bazlı Hafıza:** Her birlik için ayrı hafıza alanı - farklı birliklerle yapılan konuşmalar karışmaz.
-
-### 3. 📚 Akıllı Bilgi Tabanı
-*   **Tarihi Corpus:** Muharebeler, savaşlar, stratejik kararlar ve diplomatik süreçler.
-*   **Askeri Ontology:** Rütbe hiyerarşisi, harekat türleri, taktik kavramlar, lojistik terimler.
-*   **Semantik Arama:** Hem corpus hem ontology'de sorgu bazlı akıllı arama.
+Ozellikle **Turk Istiklal Harbi** gibi karmasik, eski Turkce terimler ve askeri terminoloji iceren belgeler uzerinde yuksek dogrulukla calismak uzere optimize edilmistir.
 
 ---
 
-## 🏗️ Sistem Mimarisi
+## Temel Yetenekler
 
-### Genel Mimari Şeması
+### Veri Mufettisi - Yapay Zeka Asistan
+- **Birlik Odakli Sorgulama:** Sectiginiz birlik (tumen, alay, kolordu) verileri getirilir ve yapay zeka bu veriler uzerinden sorularinizi yanitlar.
+- **Sorgu-Anlam Eslestirme:** Sorulan soruya en uygun kaynaklari onceliklendiren akilli filtreleme sistemi.
+- **Baglamsal Hafiza:** Konusma gecmisini ve kullanicinin onceki sorularini hatirlayarak tutarli yanitlar uretir.
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         KULLANICI ARAYÜZÜ (Streamlit)                          │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │                    VERİ MÜFETTİŞİ SEKMESİ                              │    │
-│  │  ┌─────────────┐    ┌─────────────┐    ┌──────────────────────────┐   │    │
-│  │  │ Birlik Seç │ ─► │ Verileri   │ ─► │  Yapay Zeka Sohbeti    │   │    │
-│  │  │ Filtreleme │    │ Getir       │    │  (RAG + Hafıza)        │   │    │
-│  │  └─────────────┘    └─────────────┘    └──────────────────────────┘   │    │
-│  └─────────────────────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                                        ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           RAG AGENT PİPEİNE                                    │
-│                                                                                 │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌────────────┐  │
-│  │   Sorgu     │    │  Sorgu      │    │  Kaynak     │    │    LLM    │  │
-│  │   Analizi   │ ─► │  Bazlı      │ ─► │  Birleştirme│ ─► │  (Ollama) │  │
-│  │  (Keywords) │    │  Filtreleme │    │  + Re-rank  │    │            │  │
-│  └──────────────┘    └──────────────┘    └──────────────┘    └────────────┘  │
-│                                                                                 │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │                    ÇOK KATMANLI HAFIZA SİSTEMİ                         │    │
-│  │  ┌───────────────┐    ┌───────────────┐    ┌────────────────────┐   │    │
-│  │  │  Kısa Vadeli  │    │ Uzun Vadeli   │    │   Uzun Vadeli     │   │    │
-│  │  │  Hafıza       │    │ Hafıza        │    │   (Ontology)       │   │    │
-│  │  │ (Conversation)│    │ (Corpus)      │    │                    │   │    │
-│  │  └───────────────┘    └───────────────┘    └────────────────────┘   │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                                        ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           VERİ DEPO (Qdrant + FileSystem)                       │
-│                                                                                 │
-│  ┌─────────────────────────────┐    ┌────────────────────────────────────────┐ │
-│  │   Qdrant Vector DB          │    │   data/memory/                        │ │
-│  │   (İşlenmiş Paragraflar)   │    │   ├── military_corpus.json           │ │
-│  │   - book_title              │    │   │   (Tarihi muharebeler, savaşlar)  │ │
-│  │   - page_num                │    │   └── military_ontology.json          │ │
-│  │   - military_units          │    │   (Askeri terimler, rütbeler)        │ │
-│  │   - text                    │    │                                        │ │
-│  └─────────────────────────────┘    └────────────────────────────────────────┘ │
-│                                                                                 │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │   data/raw/books/*.pdf (Kaynak kitaplar)                              │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### Cok Katmanli Hafiza Sistemi
+- **Kisa Vadeli Hafiza:** Mevcut oturumdaki son 5 mesajdan itibaren konusma baglamini korur.
+- **Uzun Vadeli Hafiza:** Tarihi corpus ve askeri ontology ile zenginlestirilmis bilgi tabani.
+- **Oturum Bazli Hafiza:** Her birlik icin ayri hafiza alani.
 
-### RAG Pipeline Detayı
+### Akilli Bilgi Tabani
+- **Tarihi Corpus:** Muharebeler, savaslar, stratejik kararlar ve diplomatik surecler.
+- **Askeri Ontology:** Rutbe hiyerarsisi, harekat turleri, taktik kavramlar, lojistik terimler.
+- **Semantik Arama:** Hem corpus hem ontology'de sorgu bazli akilli arama.
+
+---
+
+## Sistem Mimarisi
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        RAG AGENT CHAT PIPELINE                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  1. KULLANICI SORUSU                                                       │
-│     "57. Tümen'in karşılaştığı zorlukları detaylı ver"                     │
-│                           │                                                 │
-│                           ▼                                                 │
-│  2. ÖNCEKİ KONUŞMA & HAFIZA                                                │
-│     ┌──────────────────────────────────────────────────────────────────┐   │
-│     │ • Kısa Vadeli: Son 5 mesaj, özet bilgi                        │   │
-│     │ • Uzun Vadeli: Corpus + Ontology araması                      │   │
-│     │ • Session: Birlik bazlı izole hafıza                           │   │
-│     └──────────────────────────────────────────────────────────────────┘   │
-│                           │                                                 │
-│                           ▼                                                 │
-│  3. SORGU BAZLI FİLTRELEME                                                │
-│     ┌──────────────────────────────────────────────────────────────────┐   │
-│     │ • Anahtar kelime çıkarma (stopwords temizleme)                │   │
-│     │ • Kaynakları sorgu ile eşleşmeye göre skorla                  │   │
-│     │ • Aynı içerikleri tekrarlama (deduplication)                   │   │
-│     │ • Max 30 kaynak                                                 │   │
-│     └──────────────────────────────────────────────────────────────────┘   │
-│                           │                                                 │
-│                           ▼                                                 │
-│  4. VEKTÖR ARAMA (Qdrant)                                                  │
-│     ┌──────────────────────────────────────────────────────────────────┐   │
-│     │ • Semantic similarity + Entity matching                        │   │
-│     │ • Birlik filtresi (seçili birlik varyasyonları)              │   │
-│     │ • Kitap filtresi                                               │   │
-│     │ • top_k = 20 aday                                              │   │
-│     └──────────────────────────────────────────────────────────────────┘   │
-│                           │                                                 │
-│                           ▼                                                 │
-│  5. RE-RANKING (Cross-Encoder)                                             │
-│     ┌──────────────────────────────────────────────────────────────────┐   │
-│     │ • Query + Candidate text → Relevance score                    │   │
-│     │ • En alakalı 5 kaynak seçilir                                │   │
-│     │ • Kitap çeşitliliği sağlanır                                 │   │
-│──┘   │
-│                           │     └────────────────────────────────────────────────────────────────                                                 │
-│                           ▼                                                 │
-│  6. LLM PROMPT OLUŞTURMA                                                  │
-│     ┌──────────────────────────────────────────────────────────────────┐   │
-│     │ SYSTEM_PROMPT +                                                 │   │
-│     │ • Konuşma geçmişi                                               │   │
-│     │ • Önceki cevaplardan ilgili bilgiler                          │   │
-│     │ • Uzun vadeli hafıza (corpus + ontology)                       │   │
-│     │ • Kullanıcının yeni sorusu                                    │   │
-│     │ • Kaynak metinler                                              │   │
-│     └──────────────────────────────────────────────────────────────────┘   │
-│                           │                                                 │
-│                           ▼                                                 │
-│  7. LLM (Ollama - gemma3/qwen3)                                           │
-│     ┌──────────────────────────────────────────────────────────────────┐   │
-│     │ • Temperature: 0.0 ( tutarlılık için)                         │   │
-│     │ • Her bilgiye kaynak referansı eklenir                        │   │
-│     │ • Detaylı, tekrarsız, Türkçe cevaplar                         │   │
-│     └──────────────────────────────────────────────────────────────────┘   │
-│                           │                                                 │
-│                           ▼                                                 │
-│  8. CEVAP + KAYNAKLAR + PERFORMANS                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Hafıza Sistemi Mimarisi
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      ÇOK KATMANLI HAFIZA MİMARİSİ                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    KISA VADELİ HAFIZA                               │    │
-│  │                    (GlobalMemory)                                  │    │
-│  │  ┌────────────────────────────────────────────────────────────┐    │    │
-│  │  │  Mesaj Buffer (deque)                                     │    │    │
-│  │  │  [Soru1, Cevap1, Soru2, Cevap2, Soru3, Cevap3, ...]     │    │    │
-│  │  │                                                             │    │    │
-│  │  │  • Max 10 mesaj tutar (5 soru-cevap çifti)              │    │    │
-│  │  │  • Her 10 mesajda bir özet oluşturulur                  │    │    │
-│  │  └────────────────────────────────────────────────────────────┘    │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                    │                                        │
-│                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    UZUN VADELİ HAFIZA                              │    │
-│  │                    (LongTermMemory)                                │    │
-│  │                                                                     │    │
-│  │  ┌─────────────────────┐  ┌─────────────────────────────────────┐  │    │
-│  │  │ military_corpus.json│  │    military_ontology.json          │  │    │
-│  │  ├─────────────────────┤  ├─────────────────────────────────────┤  │    │
-│  │  │ topics:             │  │ turkish_military_ontology:          │  │    │
-│  │  │  - inonu_1          │  │   rank_and_command_authority:      │  │    │
-│  │  │  - inonu_2          │  │   - subay_komuta_hiyerarsisi      │  │    │
-│  │  │  - sakarya          │  │   - astsubay_idari_yapi           │  │    │
-│  │  │  - buyuk_taarruz   │  │   operational_terminology:        │  │    │
-│  │  │  - ...             │  │   - harekat_turleri               │  │    │
-│  │  │                    │  │   - taktik_kavramlar              │  │    │
-│  │  │ entities:           │  │   logistics_and_sustainment:       │  │    │
-│  │  │  - birlikler       │  │   - supply_classes                │  │    │
-│  │  │  - komutanlar      │  │   - infrastructure                │  │    │
-│  │  │  - cephane         │  │   intelligence_and_reconnaissance  │  │    │
-│  │  │  - savaslar        │  │   historical_semantic_mapping     │  │    │
-│  │  │                    │  │   staff_sections                   │  │    │
-│  │  └─────────────────────┘  └─────────────────────────────────────┘  │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                    │                                        │
-│                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    GLOBAL MEMORY                                   │    │
-│  │                    (Session Yönetimi)                             │    │
-│  │  ┌────────────────────────────────────────────────────────────┐    │    │
-│  │  │  Session ID → Memory Instance                               │    │    │
-│  │  │                                                             │    │    │
-│  │  │  "insp_57._tumen" → ConversationMemory (57. Tümen oturumu)│    │    │
-│  │  │  "insp_3._kolordu" → ConversationMemory (3. Kolordu)       │    │    │
-│  │  │  "insp_default" → ConversationMemory (Genel)              │    │    │
-│  │  └────────────────────────────────────────────────────────────┘    │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------------------------+
+|                         KULLANICI ARAYUZU (Streamlit)                             |
+|  +-----------------------------------------------------------------------------+  |
+|  |                    VERI MUFETTISI SEKMESI                                   |  |
+|  |  +-------------+    +-------------+    +--------------------------+         |  |
+|  |  | Birlik Sec  | -> | Verileri    | -> |  Yapay Zeka Sohbeti     |         |  |
+|  |  | Filtreleme  |    | Getir       |    |  (RAG + Hafiza)         |         |  |
+|  |  +-------------+    +-------------+    +--------------------------+         |  |
+|  +-----------------------------------------------------------------------------+  |
++-----------------------------------------------------------------------------------+
+                                        |
+                                        v
++-----------------------------------------------------------------------------------+
+|                           RAG AGENT PIPELINE                                      |
+|                                                                                   |
+|  +---------------+    +---------------+    +---------------+    +-------------+   |
+|  |   Sorgu       |    |  Sorgu        |    |  Kaynak       |    |    LLM      |   |
+|  |   Analizi     | -> |  Bazli        | -> |  Birlestirme  | -> |  (OpenAI)   |   |
+|  |  (Keywords)   |    |  Filtreleme   |    |  + Re-rank    |    |             |   |
+|  +---------------+    +---------------+    +---------------+    +-------------+   |
+|                                                                                   |
+|  +-----------------------------------------------------------------------------+  |
+|  |                    COK KATMANLI HAFIZA SISTEMI                              |  |
+|  |  +----------------+    +----------------+    +--------------------+          |  |
+|  |  |  Kisa Vadeli   |    | Uzun Vadeli    |    |   Uzun Vadeli      |          |  |
+|  |  |  Hafiza        |    | Hafiza         |    |   (Ontology)       |          |  |
+|  |  | (Conversation) |    | (Corpus)       |    |                    |          |  |
+|  |  +----------------+    +----------------+    +--------------------+          |  |
+|  +-----------------------------------------------------------------------------+  |
++-----------------------------------------------------------------------------------+
+                                        |
+                                        v
++-----------------------------------------------------------------------------------+
+|                           VERI DEPO (Qdrant + FileSystem)                         |
+|                                                                                   |
+|  +-----------------------------+    +------------------------------------------+  |
+|  |   Qdrant Vector DB          |    |   data/memory/                          |  |
+|  |   (Islenmis Paragraflar)    |    |   +-- military_corpus.json              |  |
+|  |   - book_title              |    |   |   (Tarihi muharebeler, savaslar)    |  |
+|  |   - page_num                |    |   +-- military_ontology.json            |  |
+|  |   - military_units          |    |   (Askeri terimler, rutbeler)           |  |
+|  |   - text                    |    |                                          |  |
+|  +-----------------------------+    +------------------------------------------+  |
++-----------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 📂 Dizin Yapısı
+## Dizin Yapisi
 
 ```
 page_general_ocr/
-├── streamlit_app.py                # Streamlit arayüzü (Ana UI)
-├── requirements.txt                # Python bağımlılıkları
-├── .env.example                    # Örnek environment dosyası
+├── streamlit_app.py                # Streamlit arayuzu
+├── requirements.txt                # Python bagimliliklari
+├── .env.example                    # Ornek environment dosyasi
 │
 ├── src/                            # Ana kaynak kodu
-│   ├── __init__.py                 # Paket tanımı
-│   │
-│   ├── agents/                     # RAG ve veri işleme agentları
-│   │   ├── __init__.py
-│   │   ├── rag_agent.py            # Ana RAG pipeline (LLM entegrasyonu)
-│   │   ├── memory.py               # Hafıza sistemi (Kısa + Uzun vadeli)
-│   │   └── ingestion_agent.py      # PDF işleme ve indeksleme
+│   ├── agents/                     # RAG ve veri isleme agentlari
+│   │   ├── rag_agent.py            # Ana RAG pipeline (OpenAI entegrasyonu)
+│   │   ├── memory.py               # Hafiza sistemi (Kisa + Uzun vadeli)
+│   │   └── ingestion_agent.py      # PDF isleme ve indeksleme
 │   │
 │   ├── services/                   # Temel servisler
-│   │   ├── __init__.py
-│   │   ├── ocr_service.py          # PDF OCR işleme (Ollama qwen2.5vl)
+│   │   ├── ocr_service.py          # PDF OCR isleme (Ollama qwen2.5vl)
 │   │   ├── embedding_service.py    # Metin embedding (sentence-transformers)
-│   │   └── vector_db_service.py    # Qdrant vektör veritabanı
+│   │   └── vector_db_service.py    # Qdrant vektor veritabani
 │   │
-│   ├── utils/                      # Yardımcı fonksiyonlar
-│   │   ├── __init__.py
-│   │   ├── text_processing.py      # Metin temizleme ve paragraf ayırma
+│   ├── utils/                      # Yardimci fonksiyonlar
+│   │   ├── text_processing.py      # Metin temizleme ve paragraf ayirma
 │   │   ├── normalization.py        # Askeri birim ismi normalizasyonu
-│   │   └── military_extraction.py  # Askeri birim çıkarma
+│   │   └── military_extraction.py  # Askeri birim cikarma
 │   │
-│   ├── config/                     # Konfigürasyon
-│   │   ├── __init__.py
+│   ├── config/                     # Konfigurasyon
 │   │   ├── settings.py             # Ana ayarlar (model, path, timeout)
-│   │   └── constants.py            # Sabit değerler
+│   │   └── constants.py            # Sabit degerler
 │   │
 │   └── core/                       # Veri modelleri
-│       ├── __init__.py
 │       └── models.py               # Pydantic veri modelleri
 │
-├── scripts/                        # Bakım ve yardımcı scriptler
-│   ├── __init__.py
-│   ├── cleanup.py                  # Geçici dosya temizliği
-│   ├── reprocess_repetitions.py    # OCR tekrar sorunlarını düzelt
-│   └── fix_remaining_repetitions.py # Kalan tekrarları temizle
-│
 ├── data/
-│   ├── memory/                     # Uzun vadeli hafıza
+│   ├── memory/                     # Uzun vadeli hafiza
 │   │   ├── military_corpus.json    # Tarihi bilgiler
 │   │   └── military_ontology.json  # Askeri terimler
 │   └── raw/
 │       └── books/
-│           └── *.pdf               # Kaynak kitaplar (Git'e dahil değil)
+│           └── *.pdf               # Kaynak kitaplar (Git'e dahil degil)
 │
-└── qdrant_data/                    # Qdrant veritabanı (~20,000 paragraf)
+└── qdrant_data/                    # Qdrant veritabani
 ```
 
 ---
 
-## 🚀 Kurulum ve Başlangıç
+## Kurulum ve Baslangic
 
 ### Gereksinimler
-*   **Donanım:** NVIDIA GPU (Önerilen: 8GB+ VRAM)
-*   **Yazılım:** Python 3.10+, [Ollama](https://ollama.com/)
+
+| Bilesen | Gereksinim |
+|---------|------------|
+| Python | 3.10+ |
+| Ollama | OCR islemleri icin |
+| OpenAI API | Chat/RAG islemleri icin |
+| GPU | Onerilen: 8GB+ VRAM (OCR icin) |
 
 ### 1. Kurulum
+
 ```bash
 git clone https://github.com/your-username/page_general_ocr.git
 cd page_general_ocr
 pip install -r requirements.txt
 ```
 
-### 2. Environment Yapılandırması
-```bash
-# Örnek yapılandırma dosyasını kopyalayın
-cp .env.example .env
+### 2. Environment Yapilandirmasi
 
-# .env dosyasını düzenleyin ve gerekli değerleri ayarlayın
+`.env` dosyasi olusturun:
+
+```bash
+cp .env.example .env
 ```
 
-### 3. Modellerin Hazırlanması
+**Zorunlu degiskenler:**
+
+```env
+# OpenAI API (Chat/RAG icin - ZORUNLU)
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# OCR Modelleri (Ollama)
+OCR_MODEL_SMALL=qwen2.5vl:3b
+OCR_MODEL_LARGE=qwen2.5vl:7b
+```
+
+### 3. Model Kurulumu
+
+**OCR icin Ollama modelleri:**
 ```bash
-# OCR Modelleri
 ollama pull qwen2.5vl:3b
 ollama pull qwen2.5vl:7b
-
-# Sohbet Modeli
-ollama pull gemma3:latest
-# veya
-ollama pull qwen3:8b
 ```
 
-### 4. Çalıştırma
+**Not:** Chat/RAG islemleri OpenAI API uzerinden yapilir, yerel model gerektirmez.
+
+### 4. Calistirma
 
 ```bash
 streamlit run streamlit_app.py
 ```
-Tarayıcınızda **`http://localhost:8501`** adresine giderek arayüze erişebilirsiniz.
+
+Tarayicinizda `http://localhost:8501` adresine giderek arayuze erisebilirsiniz.
 
 ---
 
-## 🖥️ Kullanım Kılavuzu
+## Model Mimarisi
 
-### 📂 Adım 1: Veri Yükleme
-*   **"Belge Yükle"** sekmesine gidin.
-*   PDF dosyalarınızı sürükleyip bırakın.
-*   Sistem otomatik olarak OCR işlemini başlatacak ve verileri indeksleyecektir.
+### OCR Islemleri (Ollama - Yerel)
 
-### 🔍 Adım 2: Veri Müfettişi
-*   **"Veri Müfettişi"** sekmesine gelin.
-*   **Birlik Seçimi:** İlgilendiğiniz birliği seçin (Örn: "57. Tümen").
-*   **Kitap Filtreleme:** İsteğe bağlı olarak belirli kitapları seçin.
-*   **"Verileri Getir"** butonuna basın.
+| Model | Kullanim | Aciklama |
+|-------|----------|----------|
+| `qwen2.5vl:3b` | Hizli tarama | Dusuk VRAM, hizli sonuc |
+| `qwen2.5vl:7b` | Detayli tarama | Yuksek dogruluk, daha fazla VRAM |
 
-### 💬 Adım 3: Yapay Zeka ile Sohbet
-*   Veriler getirildikten sonra aynı sekmenin alt kısmındaki sohbet kutusundan sorularınızı sorun.
-*   *"Bu tümen hangi cephelerde savaştı?"*
-*   *"Karşılaştığı zorluklar nelerdi?"*
-*   *"Komutanları kimlerdi?"*
+### Chat/RAG Islemleri (OpenAI API)
 
-**Önemli:** Yapay zeka, sadece "Verileri Getir" ile çekilen veriler üzerinden yanıt verir. Bu sayede:
-*   Halüsinasyon riski minimuma iner
-*   Sorgu daha tutarlı ve odaklı olur
-*   Kaynaklar şeffaf ve doğrulanabilir
+| Model | Kullanim | Aciklama |
+|-------|----------|----------|
+| `gpt-4o` | Zor gorevler | Karmasik analiz, derin akil yurutme |
+| `gpt-4o-mini` | Kolay gorevler | Hizli yanitlar, maliyet optimizasyonu |
+
+Sistem, sorgunun zorluguna gore otomatik model secimi yapar:
+- **Basit sorular** (factual, kisa yanitlar) -> `gpt-4o-mini`
+- **Karmasik sorular** (analiz, karsilastirma, stratejik degerlendirme) -> `gpt-4o`
 
 ---
 
-## 🤖 LLM System Prompt Stratejisi
+## Kullanim Kilavuzu
 
-```python
-SYSTEM_PROMPT = """
-Sen, Türk İstiklal Harbi konusunda uzmanlaşmış bir askeri tarih araştırmacısısın.
+### Adim 1: Veri Yukleme
+1. "Belge Yukle" sekmesine gidin
+2. PDF dosyalarinizi surukleyip birakin
+3. Sistem otomatik olarak OCR islemini baslatir
 
-KURALLAR:
-1. DİL: Tüm cevaplar MUTLAKA TÜRKÇE olmalıdır.
-2. TEKRARLAMA YASAK: Aynı bilgiyi TEKRAR YAZMA.
-3. AŞIRI DETAY VER: Her bilgi parçasını en ince detayına kadar açıkla.
-4. SORUNUN KAPSAMINA GÖRE YAPILA:
-   - Birlik sorusu: Tarihler, cepheler, komutanlar, muharebeler, kayıp/zafer
-   - Lojistik sorusu: Cephane miktarı, nakil güzergahları
-   - Stratejik sorusu: Karar nedenleri, alternatifler, sonuçlar
-5. KAYNAK GÖSTERİMİ: Her bilgiye (Kitap, Sayfa X) referansı ekle.
-6. SADECE KAYNAKLARDAKİ BİLGİLERİ KULLAN.
-7. Cevap yapısı: Başlık + Detaylı Paragraflar + Tablolar + Sonuç
-8. UZUN VADELİ HAFIZA: Corpus ve Ontology'deki bilgileri destekleyici olarak kullan.
-"""
+### Adim 2: Veri Mufettisi
+1. "Veri Mufettisi" sekmesine gelin
+2. Ilgilendiginiz birligi secin (Orn: "57. Tumen")
+3. Istege bagli olarak belirli kitaplari filtreleyin
+4. "Verileri Getir" butonuna basin
+
+### Adim 3: Yapay Zeka ile Sohbet
+Veriler getirildikten sonra sohbet kutusundan sorularinizi sorun:
+- "Bu tumen hangi cephelerde savasti?"
+- "Karsilastigi zorluklar nelerdi?"
+- "Komutanlari kimlerdi?"
+
+---
+
+## Yapilandirma
+
+### Environment Degiskenleri
+
+| Degisken | Aciklama | Varsayilan |
+|----------|----------|------------|
+| `OPENAI_API_KEY` | OpenAI API anahtari | (Zorunlu) |
+| `OCR_MODEL_SMALL` | Hizli OCR modeli | `qwen2.5vl:3b` |
+| `OCR_MODEL_LARGE` | Detayli OCR modeli | `qwen2.5vl:7b` |
+| `OCR_TIMEOUT` | OCR islemi timeout (saniye) | `1200` |
+| `OCR_DPI` | Tarama cozunurlugu | `150` |
+| `RAG_FETCH_K` | Ilk aramada getirilecek belge sayisi | `30` |
+| `RAG_TOP_K` | LLM'e gonderilecek en iyi belge sayisi | `8` |
+
+---
+
+## Hata Ayiklama
+
+### Yaygin Hatalar
+
+**1. OpenAI API Hatasi**
 ```
+Error: Invalid API Key
+```
+Cozum: `.env` dosyasinda `OPENAI_API_KEY` degerini kontrol edin.
 
----
-
-## ⚙️ Yapılandırma
-
-`src/config/settings.py` dosyası veya `.env` dosyası üzerinden sistemin tüm parametrelerini özelleştirebilirsiniz:
-
-### Environment Variables
-
-| Değişken | Açıklama | Varsayılan |
-|---------|----------|------------|
-| `OCR_MODEL_SMALL` | Hızlı tarama modeli | `qwen2.5vl:3b` |
-| `OCR_MODEL_LARGE` | Detaylı tarama modeli | `qwen2.5vl:7b` |
-| `CHAT_MODEL` | Sohbet LLM modeli | `gemma3:latest` |
-| `OCR_TIMEOUT` | OCR işlemi timeout (saniye) | `1200` |
-| `OCR_DPI` | Tarama çözünürlüğü | `150` |
-| `RAG_FETCH_K` | İlk aramada getirilecek belge sayısı | `30` |
-| `RAG_TOP_K` | LLM'e gönderilecek en iyi belge sayısı | `8` |
-
-### settings.py Parametreleri
-
-| Parametre | Açıklama | Varsayılan |
-|-----------|----------|------------|
-| `CONFIDENCE_THRESHOLD` | Model değişim eşiği | `0.6` |
-
----
-
-## 🐛 Hata Ayıklama
-
-### Yaygın Hatalar ve Çözümler
-
-#### 1. Ollama Bağlantı Hatası
+**2. Ollama Baglanti Hatasi (OCR)**
 ```
 Error: connection refused
 ```
-**Çözüm:** Ollama'nın çalıştığını doğrulayın:
+Cozum: Ollama'nin calistigini dogrulayin:
 ```bash
 ollama list
 ```
 
-#### 2. Model Bulunamadı
+**3. OCR Model Bulunamadi**
 ```
-Error: model 'xxx' not found
+Error: model 'qwen2.5vl:3b' not found
 ```
-**Çözüm:** Modeli indirin:
+Cozum: Modeli indirin:
 ```bash
 ollama pull qwen2.5vl:3b
-ollama pull gemma3:latest
 ```
 
-#### 3. VRAM Yetersiz
-**Çözüm:** Daha küçük model kullanın veya batch size'ı azaltın.
-
-#### 4. Qdrant Veritabanı Hatası
-```bash
-# Veritabanını sıfırla
-rm -rf qdrant_data/
-```
-
-### Loglama
-
-Detaylı loglar için:
-```python
-import logging
-logging.basicConfig(level=logging.DEBUG)
-```
-
-### Performans İzleme
-
-Gradio arayüzünde her yanıtın altında performans metrikleri görüntülenir:
-- Arama süresi
-- Yeniden sıralama süresi
-- LLM yanıt süresi
-- Toplam süre
+**4. VRAM Yetersiz**
+Cozum: Daha kucuk OCR modeli kullanin (`qwen2.5vl:3b`).
 
 ---
 
-## 📚 Veri Dosyaları
+## Streamlit Cloud Deployment
 
-### military_corpus.json
-Tarihi bilgiler - muharebeler, savaşlar, stratejik analizler:
+### Hizli Baslangic
 
-```json
-{
-  "topics": {
-    "inonu_1": {
-      "title": "1. İnönü Muharebesi",
-      "date_range": "1921-01-06 / 1921-01-11",
-      "phases": [...],
-      "commanders": [...],
-      "forces": {...}
-    }
-  },
-  "entities": {
-    "command_structure": {...},
-    "units": {...},
-    "key_commanders": {...},
-    "logistics": {...},
-    "weaponry": {...}
-  }
-}
+1. GitHub'a push edin
+2. [share.streamlit.io](https://share.streamlit.io) adresine gidin
+3. Repoyu secin ve `streamlit_app.py` dosyasini belirtin
+4. **Settings > Secrets** bolumune asagidaki degiskenleri ekleyin:
+
+```toml
+OPENAI_API_KEY = "sk-your-api-key"
 ```
 
-### military_ontology.json
-Askeri terminoloji ve doktrinler:
-
-```json
-{
-  "turkish_military_ontology": {
-    "rank_and_command_authority": {
-      "subay_komuta_hiyerarsisi": {...},
-      "astsubay_idari_yapi": {...}
-    },
-    "operational_terminology": {
-      "harekat_turleri": {...},
-      "taktik_kavramlar": {...}
-    },
-    "logistics_and_sustainment": {...},
-    "intelligence_and_reconnaissance": {...},
-    "historical_semantic_mapping": {...}
-  }
-}
-```
+### Notlar
+- Streamlit Cloud ucretsiz tier'da 1GB RAM siniri vardir
+- Qdrant local mode buyuk veri setlerinde yavas olabilir
+- Production icin Qdrant Cloud onerilir
 
 ---
 
-## 🤝 Katkıda Bulunma
-
-Bu proje açık kaynaklıdır. Hata bildirimleri, özellik istekleri ve Pull Request'ler memnuniyetle karşılanır.
-
-## 📄 Lisans
+## Lisans
 
 MIT License.
 
 ---
 
-## 🧠 Askeri Zeka Sistemi (Military Intelligence System)
-
-### Query Classifier - Soru Tipi Analizi
-
-Sistem, kullanıcı sorgularını otomatik olarak sınıflandırır:
-
-| Tip | Anahtar Kelimeler | Örnek |
-|-----|------------------|-------|
-| **factual** | nerede, ne zaman, kim, kaç | "57. Tümen nerede savaştı?" |
-| **analytical** | ne yapılmalı, nasıl, strateji | "Bu durumda ne yapılmalı?" |
-| **causal** | neden, niçin, sebep | "Neden geri çekildiler?" |
-| **counterfactual** | olsaydı, söyleydi | "Şöyle olsaydı ne olurdu?" |
-| **comparative** | fark, avantaj, dezavantaj | "İnönü vs Sakarya farkı?" |
-
-### Decision Engine - Karar Motoru
-
-Askeri durumları analiz eder ve karar önerileri üretir:
-
-```python
-# Örnek karar analizi
-{
-    "query_type": "analytical",
-    "requires_decision": True,
-    "decisions": [
-        {
-            "type": "防守 (Savunma)",
-            "sub_options": ["Mevzi savunması", "Hareketli savunma"],
-            "doctrine_ref": "Alan savunması doktrini"
-        }
-    ],
-    "reasoning": [
-        "Düşman kuvvetleri üstün",
-        "Mühimmat durumu kritik",
-        "Bu koşullarda en uygun seçenek: Savunma"
-    ]
-}
-```
-
-### Zorunlu Output Formatı
-
-Tüm LLM cevapları bu formatta olmak ZORUNDADIR:
-
-```
-## 1. DURUM ANALİZİ
-[Bu soruda hangi askeri durum inceleniyor?]
-
-## 2. KARAR/DEĞERLENDİRME
-[Askeri açıdan en uygun yaklaşım]
-
-## 3. GEREKÇE
-[Neden bu karar? Hangi doktrine dayanıyor?]
-
-## 4. KAYNAK ANALİZİ
-[İlgili kaynaklardan kanıtlar]
-```
-
-### Veri Dosyaları
-
-```
-data/memory/
-├── military_corpus.json      # Tarihi muharebeler ve savaşlar
-├── military_ontology.json    # Askeri terimler ve doktrinler
-├── military_decisions.json   # Stratejik karar örnekleri
-└── micro_decisions.json     # Taktik seviye mikro kararlar
-```
-
-### Micro Decisions Örnekleri
-
-Sistem, birim seviyesi karar örneklerini kullanır:
-
-| Durum | Karar | Gerekçe |
-|-------|-------|---------|
-| MG ateşi altında | Yan manevra | Doğrudan ilerleme yüksek kayıp |
-| Mühimmat kritik | Geciktirme | Cephaneden tasarruf şart |
-| Kanat açık | İhtiyat kaydırma | Kuşatmayı önleme |
-| İletişim kesildi | Subay inisiyatifi | Merkezi komuta olmadan riskli |
-| Kuşatılma riski | Breakout | Zayıf noktadan çıkış |
-
----
-
-## 📊 Sistem Skoru (Güncel)
-
-| Alan | Önceki | Güncel |
-|------|--------|--------|
-| Bilgi Çekme | 7/10 | 7/10 |
-| Veri Yapısı | 3/10 | 8/10 |
-| Karar Üretme | 1/10 | 6/10 |
-| Askeri Düşünce | 2/10 | 7/10 |
-| Reasoning | 2/10 | 7/10 |
-
-**Hedef:** "Tarih Anlatan Model" → "Karar Veren Komutan"
+<p align="center">
+  <sub>Baran Can Ercan tarafindan gelistirilmistir.</sub>
+</p>

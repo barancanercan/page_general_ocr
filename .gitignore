@@ -97,6 +97,9 @@ venv.bak/
 *.swp
 *.swo
 
+# Streamlit secrets (API keys)
+.streamlit/secrets.toml
+
 # OCR Temporary Files
 output/
 .temp_ocr/

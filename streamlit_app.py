@@ -1,6 +1,6 @@
 """
 PageGeneralOCR Pro - Askeri Tarih Araştırma Sistemi
-Yaşlı kullanıcılar için optimize edilmiş profesyonel arayüz
+Profesyonel dark tema arayüzü
 """
 import streamlit as st
 import pandas as pd
@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 
 from src.config import settings
-from src.agents.ingestion_agent import IngestionAgent
+# from src.agents.ingestion_agent import IngestionAgent  # OCR devre disi
 from src.agents.rag_agent import RAGAgent
 from src.services.vector_db_service import VectorDBService
 from qdrant_client import QdrantClient
@@ -18,242 +18,383 @@ from qdrant_client import QdrantClient
 # SAYFA YAPILANDIRMASI
 # =============================================================================
 st.set_page_config(
-    page_title="Askeri Tarih Araştırma",
-    page_icon="📚",
+    page_title="PageGeneral",
+    page_icon="logo.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# =============================================================================
-# PROFESYONEL CSS - YAŞLI KULLANICILAR İÇİN OPTİMİZE
-# =============================================================================
-def get_custom_css(font_size: int = 18, high_contrast: bool = False):
-    """Dinamik CSS oluştur - font boyutu ve kontrast moduna göre"""
+# Logo path
+LOGO_PATH = "logo.png"
 
-    # Renk şeması
-    if high_contrast:
-        bg_color = "#000000"
-        text_color = "#FFFFFF"
-        card_bg = "#1a1a1a"
-        border_color = "#FFFFFF"
-        primary_color = "#4da6ff"
-        secondary_bg = "#2d2d2d"
-    else:
-        bg_color = "#f5f7fa"
-        text_color = "#1a1a2e"
-        card_bg = "#ffffff"
-        border_color = "#d1d5db"
-        primary_color = "#1e3a5f"
-        secondary_bg = "#e8ecf1"
+# Sabit font boyutu
+FONT_SIZE = 16
+
+# =============================================================================
+# PROFESYONEL CSS - MODERN DARK TEMA
+# =============================================================================
+def get_custom_css():
+    """GitHub/Discord tarzı modern dark tema CSS"""
+    font_size = FONT_SIZE
+
+    # Ana renkler - GitHub Dark teması
+    bg_primary = "#0d1117"
+    bg_secondary = "#161b22"
+    bg_tertiary = "#21262d"
+    bg_canvas = "#010409"
+
+    # Border renkleri
+    border_default = "#30363d"
+    border_muted = "#21262d"
+
+    # Text renkleri
+    text_primary = "#e6edf3"
+    text_secondary = "#8b949e"
+    text_muted = "#6e7681"
+
+    # Accent renkler
+    accent_primary = "#238636"
+    accent_secondary = "#1f6feb"
+    accent_emphasis = "#58a6ff"
+    accent_muted = "#388bfd26"
+
+    # Uyarı renkleri
+    success_fg = "#3fb950"
+    warning_fg = "#d29922"
+    danger_fg = "#f85149"
 
     return f"""
     <style>
-        /* ===== GENEL YAPI ===== */
+        /* ===== GENEL RESET VE TEMEL YAPI ===== */
         .stApp {{
-            background-color: {bg_color};
+            background-color: {bg_primary};
         }}
 
-        /* Tüm metinler için temel font */
+        /* Ana container */
+        .main .block-container {{
+            padding: 2rem 3rem;
+            max-width: 1400px;
+        }}
+
+        /* Temel font ayarlari */
         html, body, [class*="css"] {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
             font-size: {font_size}px;
-            line-height: 1.6;
-            color: {text_color};
+            line-height: 1.5;
+            color: {text_primary};
         }}
 
-        /* ===== BAŞLIK ===== */
-        .main-header {{
-            background: linear-gradient(135deg, {primary_color} 0%, #2d5a87 100%);
-            color: white;
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        /* ===== LOGO VE BASLIK ALANI ===== */
+        .header-container {{
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            margin-bottom: 1rem;
         }}
 
-        .main-header h1 {{
-            font-size: {font_size + 14}px;
-            font-weight: 700;
+        .header-logo {{
+            flex-shrink: 0;
+        }}
+
+        .header-text {{
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }}
+
+        .header-title {{
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: {text_primary};
             margin: 0;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.5px;
         }}
 
-        .main-header p {{
-            font-size: {font_size + 2}px;
-            margin: 0.5rem 0 0 0;
-            opacity: 0.9;
+        .header-subtitle {{
+            font-size: 1.1rem;
+            color: {text_secondary};
+            margin: 0;
+            font-weight: 400;
+        }}
+
+        .header-divider {{
+            height: 1px;
+            background: linear-gradient(90deg, {border_default} 0%, transparent 100%);
+            margin: 0.5rem 0 2rem 0;
         }}
 
         /* ===== KARTLAR ===== */
         .info-card {{
-            background-color: {card_bg};
-            border: 2px solid {border_color};
-            border-radius: 12px;
-            padding: 1.5rem;
+            background-color: {bg_secondary};
+            border: 1px solid {border_default};
+            border-radius: 6px;
+            padding: 1.25rem;
             margin: 1rem 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }}
 
         .info-card h3 {{
-            color: {primary_color};
-            font-size: {font_size + 4}px;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid {primary_color};
+            color: {text_primary};
+            font-size: {font_size + 2}px;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
             padding-bottom: 0.5rem;
+            border-bottom: 1px solid {border_default};
         }}
 
-        /* ===== ADIM GÖSTERGESİ ===== */
+        /* ===== ADIM GOSTERGESI ===== */
         .steps-container {{
-            background-color: {secondary_bg};
-            border-radius: 12px;
-            padding: 1.5rem;
+            background-color: {bg_secondary};
+            border: 1px solid {border_default};
+            border-radius: 6px;
+            padding: 1.25rem;
             margin: 1.5rem 0;
         }}
 
         .step {{
             display: flex;
             align-items: center;
-            padding: 1rem;
+            padding: 0.875rem 1rem;
             margin: 0.5rem 0;
-            background-color: {card_bg};
-            border-radius: 8px;
-            border-left: 4px solid {primary_color};
+            background-color: {bg_tertiary};
+            border-radius: 6px;
+            border-left: 3px solid {accent_primary};
+            transition: background-color 0.15s ease;
+        }}
+
+        .step:hover {{
+            background-color: {accent_muted};
         }}
 
         .step-number {{
-            background-color: {primary_color};
+            background-color: {accent_primary};
             color: white;
-            width: 36px;
-            height: 36px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: {font_size + 2}px;
+            font-weight: 600;
+            font-size: {font_size - 2}px;
             margin-right: 1rem;
             flex-shrink: 0;
         }}
 
         .step-text {{
             font-size: {font_size}px;
-            color: {text_color};
+            color: {text_primary};
+        }}
+
+        .step-text strong {{
+            color: {text_primary};
         }}
 
         /* ===== BUTONLAR ===== */
         .stButton > button {{
-            font-size: {font_size + 2}px !important;
-            padding: 0.8rem 2rem !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-            min-height: 56px !important;
-            transition: all 0.2s ease !important;
+            font-size: {font_size}px !important;
+            font-weight: 500 !important;
+            padding: 0.625rem 1rem !important;
+            border-radius: 6px !important;
+            min-height: 44px !important;
+            transition: all 0.15s ease !important;
+            border: 1px solid {border_default} !important;
+            background-color: {bg_tertiary} !important;
+            color: {text_primary} !important;
         }}
 
         .stButton > button:hover {{
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-color: {bg_secondary} !important;
+            border-color: {text_muted} !important;
         }}
 
-        .stButton > button[kind="primary"] {{
-            background-color: {primary_color} !important;
-            border: none !important;
+        .stButton > button[kind="primary"],
+        .stButton > button[data-testid="baseButton-primary"] {{
+            background-color: {accent_primary} !important;
+            border-color: {accent_primary} !important;
+            color: white !important;
+        }}
+
+        .stButton > button[kind="primary"]:hover,
+        .stButton > button[data-testid="baseButton-primary"]:hover {{
+            background-color: #2ea043 !important;
+            border-color: #2ea043 !important;
         }}
 
         /* ===== SIDEBAR ===== */
         [data-testid="stSidebar"] {{
-            background-color: {card_bg};
-            padding: 1rem;
+            background-color: {bg_secondary};
+            border-right: 1px solid {border_default};
+        }}
+
+        [data-testid="stSidebar"] > div:first-child {{
+            padding: 1.5rem 1rem;
+        }}
+
+        .sidebar-header {{
+            font-size: {font_size + 2}px;
+            font-weight: 600;
+            color: {text_primary};
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid {border_default};
         }}
 
         [data-testid="stSidebar"] .stSelectbox label,
         [data-testid="stSidebar"] .stTextInput label,
         [data-testid="stSidebar"] .stSlider label {{
-            font-size: {font_size}px !important;
-            font-weight: 600 !important;
-            color: {text_color} !important;
+            font-size: {font_size - 1}px !important;
+            font-weight: 500 !important;
+            color: {text_secondary} !important;
+            margin-bottom: 0.25rem !important;
         }}
 
         /* ===== SELECT BOX ===== */
         .stSelectbox > div > div {{
             font-size: {font_size}px !important;
-            min-height: 48px !important;
+            background-color: {bg_tertiary} !important;
+            border-color: {border_default} !important;
+            border-radius: 6px !important;
+            min-height: 40px !important;
+        }}
+
+        .stSelectbox > div > div:hover {{
+            border-color: {text_muted} !important;
         }}
 
         /* ===== TEXT INPUT ===== */
         .stTextInput > div > div > input {{
             font-size: {font_size}px !important;
-            min-height: 48px !important;
-            padding: 0.75rem !important;
+            background-color: {bg_tertiary} !important;
+            border-color: {border_default} !important;
+            border-radius: 6px !important;
+            min-height: 40px !important;
+            padding: 0.5rem 0.75rem !important;
+            color: {text_primary} !important;
+        }}
+
+        .stTextInput > div > div > input:focus {{
+            border-color: {accent_secondary} !important;
+            box-shadow: 0 0 0 3px {accent_muted} !important;
+        }}
+
+        .stTextInput > div > div > input::placeholder {{
+            color: {text_muted} !important;
         }}
 
         /* ===== CHAT INPUT ===== */
         .stChatInput > div {{
-            border: 2px solid {primary_color} !important;
-            border-radius: 12px !important;
+            border: 1px solid {border_default} !important;
+            border-radius: 6px !important;
+            background-color: {bg_secondary} !important;
+        }}
+
+        .stChatInput > div:focus-within {{
+            border-color: {accent_secondary} !important;
+            box-shadow: 0 0 0 3px {accent_muted} !important;
         }}
 
         .stChatInput textarea {{
-            font-size: {font_size + 2}px !important;
-            min-height: 60px !important;
+            font-size: {font_size}px !important;
+            color: {text_primary} !important;
+            background-color: transparent !important;
+        }}
+
+        .stChatInput textarea::placeholder {{
+            color: {text_muted} !important;
         }}
 
         /* ===== CHAT MESAJLARI ===== */
         [data-testid="stChatMessage"] {{
-            background-color: {card_bg};
-            border: 1px solid {border_color};
-            border-radius: 12px;
+            background-color: {bg_secondary};
+            border: 1px solid {border_default};
+            border-radius: 6px;
             padding: 1rem;
-            margin: 0.75rem 0;
+            margin: 0.5rem 0;
             font-size: {font_size}px;
         }}
 
-        /* ===== KAYNAKLAR ===== */
+        /* Kullanici mesaji */
+        [data-testid="stChatMessage"][data-testid*="user"] {{
+            background-color: {bg_tertiary};
+        }}
+
+        /* ===== KAYNAKLAR KUTUSU ===== */
         .sources-box {{
-            background-color: {secondary_bg};
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
+            background-color: {bg_tertiary};
+            border: 1px solid {border_default};
+            border-radius: 6px;
+            padding: 0.875rem;
+            margin-top: 0.75rem;
             font-size: {font_size - 2}px;
+        }}
+
+        .sources-box strong {{
+            color: {text_secondary};
         }}
 
         .source-tag {{
             display: inline-block;
-            background-color: {primary_color};
-            color: white;
-            padding: 0.3rem 0.8rem;
+            background-color: {accent_muted};
+            color: {accent_emphasis};
+            padding: 0.25rem 0.625rem;
             border-radius: 20px;
-            margin: 0.25rem;
-            font-size: {font_size - 2}px;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+            font-size: {font_size - 3}px;
+            font-weight: 500;
+            border: 1px solid {accent_secondary}40;
         }}
 
         /* ===== TABS ===== */
         .stTabs [data-baseweb="tab-list"] {{
-            gap: 8px;
+            gap: 0;
+            background-color: transparent;
+            border-bottom: 1px solid {border_default};
         }}
 
         .stTabs [data-baseweb="tab"] {{
-            font-size: {font_size + 2}px !important;
-            font-weight: 600 !important;
-            padding: 1rem 2rem !important;
-            border-radius: 8px 8px 0 0 !important;
+            font-size: {font_size}px !important;
+            font-weight: 500 !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0 !important;
+            color: {text_secondary} !important;
+            background-color: transparent !important;
+            border-bottom: 2px solid transparent !important;
+        }}
+
+        .stTabs [data-baseweb="tab"]:hover {{
+            color: {text_primary} !important;
+            background-color: {bg_tertiary} !important;
+        }}
+
+        .stTabs [aria-selected="true"] {{
+            color: {text_primary} !important;
+            border-bottom-color: {accent_primary} !important;
         }}
 
         /* ===== DATAFRAME ===== */
         .stDataFrame {{
+            border: 1px solid {border_default};
+            border-radius: 6px;
+            overflow: hidden;
+        }}
+
+        .stDataFrame > div {{
             font-size: {font_size - 1}px !important;
         }}
 
-        /* ===== METRİKLER ===== */
+        /* ===== METRIKLER ===== */
         [data-testid="stMetricValue"] {{
-            font-size: {font_size + 8}px !important;
-            font-weight: 700 !important;
-            color: {primary_color} !important;
+            font-size: {font_size + 12}px !important;
+            font-weight: 600 !important;
+            color: {text_primary} !important;
         }}
 
         [data-testid="stMetricLabel"] {{
-            font-size: {font_size}px !important;
+            font-size: {font_size - 2}px !important;
+            color: {text_secondary} !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }}
 
         /* ===== SLIDER ===== */
@@ -261,29 +402,251 @@ def get_custom_css(font_size: int = 18, high_contrast: bool = False):
             font-size: {font_size}px !important;
         }}
 
+        .stSlider [data-baseweb="slider"] {{
+            margin-top: 0.5rem;
+        }}
+
         /* ===== UYARI KUTULARI ===== */
         .stAlert {{
             font-size: {font_size}px !important;
-            padding: 1rem !important;
-            border-radius: 8px !important;
+            padding: 0.875rem 1rem !important;
+            border-radius: 6px !important;
+            border-width: 1px !important;
         }}
 
-        /* ===== FOOTER ===== */
-        .footer {{
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            border-top: 2px solid {border_color};
-            color: {text_color};
-            opacity: 0.7;
-            font-size: {font_size - 2}px;
+        /* Info */
+        [data-testid="stAlert"][data-baseweb="notification"] {{
+            background-color: {accent_muted} !important;
+            border-color: {accent_secondary}40 !important;
         }}
 
         /* ===== DIVIDER ===== */
         hr {{
             border: none;
-            border-top: 2px solid {border_color};
-            margin: 2rem 0;
+            border-top: 1px solid {border_default};
+            margin: 1.5rem 0;
+        }}
+
+        .stDivider {{
+            background-color: {border_default};
+        }}
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {{
+            width: 8px;
+            height: 8px;
+        }}
+
+        ::-webkit-scrollbar-track {{
+            background: {bg_primary};
+        }}
+
+        ::-webkit-scrollbar-thumb {{
+            background: {border_default};
+            border-radius: 4px;
+        }}
+
+        ::-webkit-scrollbar-thumb:hover {{
+            background: {text_muted};
+        }}
+
+        /* ===== FILE UPLOADER ===== */
+        [data-testid="stFileUploader"] {{
+            background-color: {bg_secondary};
+            border: 1px dashed {border_default};
+            border-radius: 6px;
+            padding: 1rem;
+        }}
+
+        [data-testid="stFileUploader"]:hover {{
+            border-color: {text_muted};
+        }}
+
+        /* ===== SPINNER ===== */
+        .stSpinner > div {{
+            border-top-color: {accent_primary} !important;
+        }}
+
+        /* ===== CAPTION ===== */
+        .stCaption {{
+            color: {text_muted} !important;
+            font-size: {font_size - 2}px !important;
+        }}
+
+        /* ===== MARKDOWN BASLIKLAR ===== */
+        h1, h2, h3, h4, h5, h6 {{
+            color: {text_primary} !important;
+            font-weight: 600 !important;
+        }}
+
+        h3 {{
+            font-size: {font_size + 4}px !important;
+            margin-top: 1.5rem !important;
+            margin-bottom: 1rem !important;
+        }}
+
+        /* ===== FOOTER ===== */
+        .footer-container {{
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid {border_default};
+        }}
+
+        .footer-content {{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.5rem;
+            padding: 1.5rem 0;
+        }}
+
+        .footer-logo {{
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: {text_primary};
+            margin-bottom: 0.25rem;
+        }}
+
+        .footer-tagline {{
+            font-size: {font_size - 1}px;
+            color: {text_secondary};
+            max-width: 400px;
+        }}
+
+        .footer-credit {{
+            font-size: {font_size - 2}px;
+            color: {text_muted};
+            margin-top: 0.5rem;
+        }}
+
+        .footer-divider {{
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, {border_default}, transparent);
+            margin: 0.75rem 0;
+        }}
+
+        /* ===== SECTION BASLIK ===== */
+        .section-header {{
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0 1rem 0;
+            font-size: {font_size + 2}px;
+            font-weight: 600;
+            color: {text_primary};
+        }}
+
+        .section-header-icon {{
+            font-size: 1.25rem;
+        }}
+
+        /* ===== DOWNLOAD BUTTON ===== */
+        .stDownloadButton > button {{
+            font-size: {font_size - 1}px !important;
+            background-color: {bg_tertiary} !important;
+            border-color: {border_default} !important;
+            color: {text_primary} !important;
+        }}
+
+        .stDownloadButton > button:hover {{
+            background-color: {bg_secondary} !important;
+            border-color: {text_muted} !important;
+        }}
+
+        /* ===== MOBIL UYUMLULUK ===== */
+        @media (max-width: 768px) {{
+            .main .block-container {{
+                padding: 1rem !important;
+                max-width: 100% !important;
+            }}
+
+            h1 {{
+                font-size: 1.5rem !important;
+            }}
+
+            h3 {{
+                font-size: 1.1rem !important;
+            }}
+
+            .steps-container {{
+                padding: 0.75rem !important;
+            }}
+
+            .step {{
+                padding: 0.75rem !important;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }}
+
+            .step-number {{
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }}
+
+            .step-text {{
+                font-size: 14px !important;
+            }}
+
+            .stButton > button {{
+                font-size: 14px !important;
+                padding: 0.5rem 1rem !important;
+                min-height: 44px !important;
+            }}
+
+            [data-testid="stChatMessage"] {{
+                padding: 0.75rem !important;
+            }}
+
+            .stChatInput textarea {{
+                font-size: 16px !important;
+            }}
+
+            .footer-logo {{
+                font-size: 1.1rem;
+            }}
+
+            .footer-tagline {{
+                font-size: 13px;
+            }}
+
+            .footer-credit {{
+                font-size: 12px;
+            }}
+
+            .source-tag {{
+                font-size: 11px !important;
+                padding: 3px 8px !important;
+            }}
+
+            [data-testid="stMetricValue"] {{
+                font-size: 1.5rem !important;
+            }}
+
+            [data-testid="stMetricLabel"] {{
+                font-size: 12px !important;
+            }}
+        }}
+
+        @media (max-width: 480px) {{
+            .main .block-container {{
+                padding: 0.5rem !important;
+            }}
+
+            h1 {{
+                font-size: 1.3rem !important;
+            }}
+
+            .steps-container {{
+                padding: 0.5rem !important;
+            }}
+
+            .step {{
+                padding: 0.5rem !important;
+            }}
         }}
     </style>
     """
@@ -295,29 +658,26 @@ if "inspector_messages" not in st.session_state:
     st.session_state.inspector_messages = []
 if "inspector_data" not in st.session_state:
     st.session_state.inspector_data = []
-if "font_size" not in st.session_state:
-    st.session_state.font_size = 18
-if "high_contrast" not in st.session_state:
-    st.session_state.high_contrast = False
 
 # =============================================================================
-# QDRANT CLIENT (Singleton - kilitleme sorununu önler)
+# QDRANT CLIENT (Singleton - kilitleme sorununu onler)
 # =============================================================================
 @st.cache_resource
 def init_qdrant():
-    """Qdrant client'ı bir kez oluştur ve VectorDBService'e enjekte et"""
+    """Qdrant client'i bir kez olustur ve VectorDBService'e enjekte et"""
     import os
-    lock_file = settings.QDRANT_PATH / ".lock"
 
-    # Lock dosyası varsa sil
-    if lock_file.exists():
-        try:
-            os.remove(lock_file)
-        except:
-            pass
+    # Lock dosyalarini temizle
+    for lock_name in [".lock", ".qdrant_flock"]:
+        lock_file = settings.QDRANT_PATH / lock_name
+        if lock_file.exists():
+            try:
+                os.remove(lock_file)
+            except:
+                pass
 
     client = QdrantClient(path=str(settings.QDRANT_PATH))
-    VectorDBService._client = client
+    VectorDBService.set_client(client)
     return client
 
 init_qdrant()
@@ -327,66 +687,42 @@ init_qdrant()
 # =============================================================================
 @st.cache_resource
 def get_agents():
-    return IngestionAgent(), RAGAgent()
+    return RAGAgent()
 
-ingestion_agent, rag_agent = get_agents()
+rag_agent = get_agents()
 
 # =============================================================================
 # SIDEBAR - AYARLAR
 # =============================================================================
 with st.sidebar:
-    st.markdown("## ⚙️ Görünüm Ayarları")
+    st.markdown('<p class="sidebar-header">Kaynak Secimi</p>', unsafe_allow_html=True)
 
-    # Font boyutu
-    font_size = st.slider(
-        "📏 Yazı Boyutu",
-        min_value=14,
-        max_value=28,
-        value=st.session_state.font_size,
-        step=2,
-        help="Tüm metinlerin boyutunu ayarlayın"
-    )
-    st.session_state.font_size = font_size
-
-    # Yüksek kontrast
-    high_contrast = st.checkbox(
-        "🌙 Yüksek Kontrast Modu",
-        value=st.session_state.high_contrast,
-        help="Görme zorluğu için koyu tema"
-    )
-    st.session_state.high_contrast = high_contrast
-
-    st.divider()
-
-    # Kitap ve birlik seçimi
-    st.markdown("## 📖 Kaynak Seçimi")
-
-    books = ["Tüm Kitaplar"] + rag_agent.get_ingested_books()
+    books = ["Tum Kitaplar"] + rag_agent.get_ingested_books()
     selected_book = st.selectbox(
         "Kitap",
         books,
-        help="Aramayı belirli bir kitapla sınırlayın"
+        help="Aramayi belirli bir kitapla sinirlayin"
     )
 
-    units = ["Tüm Birlikler"] + rag_agent.get_all_units()
+    units = ["Tum Birlikler"] + rag_agent.get_all_units()
 
     # Birlik arama
     unit_search = st.text_input(
-        "🔍 Birlik Ara",
-        placeholder="Örn: 57. Tümen",
-        help="Birlik listesini filtrelemek için yazın"
+        "Birlik Ara",
+        placeholder="Orn: 57. Tumen",
+        help="Birlik listesini filtrelemek icin yazin"
     )
 
     if unit_search:
         filtered_units = [u for u in units if unit_search.lower() in u.lower()]
-        selected_unit = st.selectbox("Birlik Seçin", filtered_units[:30])
+        selected_unit = st.selectbox("Birlik Secin", filtered_units[:30])
     else:
-        selected_unit = st.selectbox("Birlik Seçin", units[:50])
+        selected_unit = st.selectbox("Birlik Secin", units[:50])
 
     st.divider()
 
-    # İstatistikler
-    st.markdown("## 📊 Veritabanı")
+    # Istatistikler
+    st.markdown('<p class="sidebar-header">Veritabani</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         st.metric("Kitap", len(books) - 1)
@@ -394,67 +730,74 @@ with st.sidebar:
         st.metric("Birlik", len(units) - 1)
 
 # CSS uygula
-st.markdown(get_custom_css(font_size, high_contrast), unsafe_allow_html=True)
+st.markdown(get_custom_css(), unsafe_allow_html=True)
 
 # =============================================================================
-# ANA BAŞLIK
+# ANA BASLIK
 # =============================================================================
-st.markdown("""
-<div class="main-header">
-    <h1>📚 Askeri Tarih Araştırma Sistemi</h1>
-    <p>Türk Kurtuluş Savaşı ve Askeri Tarih Belgeleri</p>
-</div>
-""", unsafe_allow_html=True)
+header_col1, header_col2 = st.columns([1, 11])
+with header_col1:
+    st.image(LOGO_PATH, width=90)
+with header_col2:
+    st.markdown("""
+    <div style="padding: 0.75rem 0 0 0;">
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 600; color: #e6edf3; letter-spacing: -0.5px;">PageGeneral</h1>
+        <p style="margin: 0.35rem 0 0 0; font-size: 1rem; color: #8b949e;">Turk Kurtulus Savasi ve Askeri Tarih Belgeleri</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("<hr style='border: none; border-top: 1px solid #30363d; margin: 1.5rem 0;'>", unsafe_allow_html=True)
 
 # =============================================================================
 # ANA SEKMELER
 # =============================================================================
-tab1, tab2 = st.tabs(["🔍 Soru Sor", "📤 PDF Yükle"])
+# OCR devre disi - sadece soru sor sekmesi aktif
+tab1 = st.container()
 
 # =============================================================================
-# SEKME 1: SORU SOR
+# ANA ICERIK: SORU SOR
 # =============================================================================
 with tab1:
-    # Kullanım adımları
+    # Kullanim adimlari
     st.markdown("""
     <div class="steps-container">
         <div class="step">
             <div class="step-number">1</div>
-            <div class="step-text"><strong>Kaynak Seçin:</strong> Sol menüden kitap veya birlik seçin</div>
+            <div class="step-text"><strong>Kaynak Secin:</strong> Sol menuден kitap veya birlik secin</div>
         </div>
         <div class="step">
             <div class="step-number">2</div>
-            <div class="step-text"><strong>Verileri Yükleyin:</strong> Aşağıdaki butona basın</div>
+            <div class="step-text"><strong>Verileri Yukleyin:</strong> Asagidaki butona basin</div>
         </div>
         <div class="step">
             <div class="step-number">3</div>
-            <div class="step-text"><strong>Soru Sorun:</strong> En alttaki kutuya sorunuzu yazın</div>
+            <div class="step-text"><strong>Soru Sorun:</strong> En alttaki kutuya sorunuzu yazin</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # Veri yükleme bölümü
-    st.markdown("### 📥 Veri Yükleme")
+    # Veri yukleme bolumu
+    st.markdown('<div class="section-header"><span class="section-header-icon">&#128229;</span> Veri Yukleme</div>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([2, 1, 1])
 
     with col1:
         limit = st.slider(
-            "Kayıt Sayısı",
+            "Kayit Sayisi",
             min_value=50,
             max_value=2000,
             value=200,
             step=50,
-            help="Yüklenecek maksimum kayıt sayısı"
+            help="Yuklenecek maksimum kayit sayisi"
         )
 
     with col2:
-        st.write("")  # Boşluk
+        st.write("")  # Bosluk
         st.write("")
-        if st.button("📥 VERİLERİ GETİR", type="primary", use_container_width=True):
-            with st.spinner("Veriler yükleniyor..."):
-                book_f = selected_book if selected_book != "Tüm Kitaplar" else None
-                unit_variations = rag_agent._get_unit_variations(selected_unit) if selected_unit != "Tüm Birlikler" else []
+        if st.button("VERILERI GETIR", type="primary", use_container_width=True):
+            with st.spinner("Veriler yukleniyor..."):
+                book_f = selected_book if selected_book != "Tum Kitaplar" else None
+                unit_variations = rag_agent._get_unit_variations(selected_unit) if selected_unit != "Tum Birlikler" else []
 
                 data = VectorDBService.browse_paragraphs(
                     book_filter=book_f,
@@ -463,7 +806,7 @@ with tab1:
                 )
                 st.session_state.inspector_data = data
                 st.session_state.inspector_messages = []
-                st.success(f"✅ {len(data)} kayıt yüklendi!")
+                st.success(f"{len(data)} kayit yuklendi!")
 
     with col3:
         st.write("")
@@ -472,49 +815,50 @@ with tab1:
             df = pd.DataFrame(st.session_state.inspector_data)
             csv = df.to_csv(index=False).encode('utf-8-sig')
             st.download_button(
-                "💾 CSV İNDİR",
+                "CSV INDIR",
                 csv,
                 f"veriler_{datetime.now().strftime('%Y%m%d')}.csv",
                 "text/csv",
                 use_container_width=True
             )
 
-    # Yüklenen veri tablosu - HER ZAMAN GÖRÜNÜR
+    # Yuklenen veri tablosu - HER ZAMAN GORUNUR
     if st.session_state.inspector_data:
-        st.markdown(f"### 📋 Yüklenen Veriler ({len(st.session_state.inspector_data)} kayıt)")
+        st.markdown(f'<div class="section-header"><span class="section-header-icon">&#128203;</span> Yuklenen Veriler ({len(st.session_state.inspector_data)} kayit)</div>', unsafe_allow_html=True)
         df = pd.DataFrame(st.session_state.inspector_data)
         st.dataframe(df, height=350, use_container_width=True)
 
     st.divider()
 
     # =================================================================
-    # SOHBET BÖLÜMÜ
+    # SOHBET BOLUMU
     # =================================================================
-    st.markdown("### 💬 Soru-Cevap")
+    st.markdown('<div class="section-header"><span class="section-header-icon">&#128172;</span> Soru-Cevap</div>', unsafe_allow_html=True)
 
     if st.session_state.inspector_data:
-        # Sohbet geçmişi
+        # Sohbet gecmisi
         for msg in st.session_state.inspector_messages:
-            with st.chat_message(msg["role"]):
+            avatar = LOGO_PATH if msg["role"] == "assistant" else None
+            with st.chat_message(msg["role"], avatar=avatar):
                 st.markdown(msg["content"])
                 if msg.get("sources"):
                     sources_html = " ".join([f'<span class="source-tag">{s}</span>' for s in msg["sources"][:5]])
-                    st.markdown(f'<div class="sources-box"><strong>📚 Kaynaklar:</strong><br>{sources_html}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="sources-box"><strong>Kaynaklar:</strong><br>{sources_html}</div>', unsafe_allow_html=True)
 
-        # Soru girişi
-        if prompt := st.chat_input("Sorunuzu buraya yazın..."):
-            # Kullanıcı mesajı
+        # Soru girisi
+        if prompt := st.chat_input("Sorunuzu buraya yazin..."):
+            # Kullanici mesaji
             st.session_state.inspector_messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):
                 st.markdown(prompt)
 
-            # Yanıt
-            with st.chat_message("assistant"):
-                with st.spinner("Yanıt hazırlanıyor..."):
-                    book_f = selected_book if selected_book != "Tüm Kitaplar" else None
-                    unit_f = selected_unit if selected_unit != "Tüm Birlikler" else None
+            # Yanit
+            with st.chat_message("assistant", avatar=LOGO_PATH):
+                with st.spinner("Yanit hazirlaniyor..."):
+                    book_f = selected_book if selected_book != "Tum Kitaplar" else None
+                    unit_f = selected_unit if selected_unit != "Tum Birlikler" else None
 
-                    # Geçmiş
+                    # Gecmis
                     history = []
                     msgs = st.session_state.inspector_messages
                     for i in range(0, len(msgs) - 1, 2):
@@ -537,9 +881,9 @@ with tab1:
 
                     if sources:
                         sources_html = " ".join([f'<span class="source-tag">{s}</span>' for s in sources[:5]])
-                        st.markdown(f'<div class="sources-box"><strong>📚 Kaynaklar:</strong><br>{sources_html}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="sources-box"><strong>Kaynaklar:</strong><br>{sources_html}</div>', unsafe_allow_html=True)
 
-                    st.caption(f"⏱️ Yanıt süresi: {timing.get('total', 0):.1f} saniye")
+                    st.caption(f"Yanit suresi: {timing.get('total', 0):.1f} saniye")
 
             st.session_state.inspector_messages.append({
                 "role": "assistant",
@@ -547,70 +891,23 @@ with tab1:
                 "sources": sources
             })
     else:
-        st.info("👆 Soru sormak için önce yukarıdaki **'VERİLERİ GETİR'** butonuna tıklayın.")
+        st.info("Soru sormak icin once yukaridaki 'VERILERI GETIR' butonuna tiklayin.")
 
 # =============================================================================
-# SEKME 2: PDF YÜKLE
+# SEKME 2: PDF YUKLE (DEVRE DISI)
 # =============================================================================
-with tab2:
-    st.markdown("""
-    <div class="info-card">
-        <h3>📤 Yeni PDF Ekle</h3>
-        <p>Veritabanına yeni bir askeri tarih belgesi eklemek için PDF dosyası yükleyin.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    uploaded_file = st.file_uploader(
-        "PDF dosyası seçin",
-        type=["pdf"],
-        help="Maksimum 200MB boyutunda PDF dosyası"
-    )
-
-    if uploaded_file:
-        st.success(f"📄 **{uploaded_file.name}** ({uploaded_file.size / 1024 / 1024:.1f} MB)")
-
-        col1, col2 = st.columns([1, 2])
-
-        with col1:
-            if st.button("🚀 İŞLE VE EKLE", type="primary", use_container_width=True):
-                # Geçici dosyaya kaydet
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-                    tmp.write(uploaded_file.getvalue())
-                    tmp_path = tmp.name
-
-                progress_bar = st.progress(0)
-                status_text = st.empty()
-                log_area = st.empty()
-
-                logs = []
-
-                def on_progress(msg: str):
-                    logs.append(msg)
-                    log_area.text_area("İşlem Günlüğü", "\n".join(logs[-15:]), height=250)
-
-                try:
-                    result = ingestion_agent.ingest_pdf(tmp_path, max_pages=0, progress_callback=on_progress)
-
-                    if result["status"] == "ok":
-                        st.success(f"✅ {result['message']}")
-                        progress_bar.progress(100)
-                    elif result["status"] == "skipped":
-                        st.warning(f"⚠️ {result['message']}")
-                    else:
-                        st.error(f"❌ {result['message']}")
-
-                except Exception as e:
-                    st.error(f"Hata oluştu: {e}")
-                finally:
-                    os.unlink(tmp_path)
-                    st.cache_resource.clear()
+# OCR modulu su an devre disi birakilmistir.
 
 # =============================================================================
 # FOOTER
 # =============================================================================
 st.markdown("""
-<div class="footer">
-    <strong>Askeri Tarih Araştırma Sistemi</strong> | PageGeneralOCR Pro<br>
-    Türk Kurtuluş Savaşı ve Askeri Tarih Belgeleri Veritabanı
+<div class="footer-container">
+    <div class="footer-content">
+        <div class="footer-logo">PageGeneral</div>
+        <div class="footer-divider"></div>
+        <div class="footer-tagline">Turk Kurtulus Savasi ve Askeri Tarih Belgeleri</div>
+        <div class="footer-credit">Baran Can Ercan tarafindan gelistirilmistir.</div>
+    </div>
 </div>
 """, unsafe_allow_html=True)

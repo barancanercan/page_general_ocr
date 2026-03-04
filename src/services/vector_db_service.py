@@ -14,15 +14,54 @@ _collection_checked = set()
 class VectorDBService:
     _client = None
     _client_lock = threading.Lock()
+    _initialized = False
 
     @classmethod
     def get_client(cls) -> QdrantClient:
-        if cls._client is None:
-            with cls._client_lock:
-                if cls._client is None: # Double-check locking
-                    logger.info(f"Connecting to Qdrant at {settings.QDRANT_PATH}")
-                    cls._client = QdrantClient(path=str(settings.QDRANT_PATH))
+        # Eger client zaten varsa, onu kullan
+        if cls._client is not None:
+            return cls._client
+
+        # Streamlit context'inde ise, _client'in set edilmesini bekle
+        # (init_qdrant tarafindan set edilecek)
+        if cls._initialized:
+            raise RuntimeError("Qdrant client not initialized. Call init_qdrant first.")
+
+        with cls._client_lock:
+            if cls._client is None:
+                cls._init_client()
         return cls._client
+
+    @classmethod
+    def _init_client(cls):
+        """Internal: client olustur"""
+        import os
+        logger.info(f"Connecting to Qdrant at {settings.QDRANT_PATH}")
+
+        # Lock dosyasini temizle
+        lock_file = settings.QDRANT_PATH / ".lock"
+        if lock_file.exists():
+            try:
+                os.remove(lock_file)
+            except:
+                pass
+
+        # Eski flock dosyasini da temizle
+        flock_file = settings.QDRANT_PATH / ".qdrant_flock"
+        if flock_file.exists():
+            try:
+                os.remove(flock_file)
+            except:
+                pass
+
+        cls._client = QdrantClient(path=str(settings.QDRANT_PATH))
+        cls._initialized = True
+
+    @classmethod
+    def set_client(cls, client: QdrantClient):
+        """Harici client enjekte et (streamlit icin)"""
+        cls._client = client
+        cls._initialized = True
 
     @classmethod
     def ensure_collection(cls, force: bool = False):
