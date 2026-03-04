@@ -558,6 +558,7 @@ Konusma:
     def _get_filtered_items(self, data: List[Dict[str, Any]], question: str = "", unit_filter: Optional[Union[str, List[str]]] = None) -> List[Dict[str, Any]]:
         """
         Filtreleme ve puanlandirma:
+        - KOMUTAN/BIYOGRAFI SORGUSU TESPITI - Ozel puanlama
         - ISIM ESLESMESI - EN YUKSEK ONCELIK (kisi adlari)
         - Tarih eslesmesi varsa yuksek oncelik ver
         - Secilen birlige (unit_filter) oncelik ver
@@ -575,6 +576,17 @@ Konusma:
         query_dates = extract_dates(question)
         proper_names = self._extract_proper_names(question)
 
+        # KOMUTAN/BIYOGRAFI SORGUSU TESPITI
+        commander_query_words = ["komutan", "kumandan", "biyografi", "kimdir", "kim", "rutbe", "rütbe", "subay", "general", "pasa", "paşa"]
+        is_commander_query = any(cw in question_lower for cw in commander_query_words)
+
+        if is_commander_query:
+            logger.info(f"=== KOMUTAN SORGUSU TESPIT EDILDI: '{question}' ===")
+
+        # Askeri rutbe kelimeleri
+        rank_words = ["albay", "yarbay", "binbasi", "binbaşı", "yuzbasi", "yüzbaşı", "tegmen", "teğmen",
+                      "general", "pasa", "paşa", "müşir", "musir", "ferik", "mirliva", "miralay", "kaymakam"]
+
         unit_variations = []
         if unit_filter:
             if isinstance(unit_filter, list):
@@ -585,10 +597,35 @@ Konusma:
         scored_data = []
         for item in data:
             text = tr_lower(item.get("Metin", ""))
+            text_original = item.get("Metin", "")
             units = tr_lower(item.get("Birlikler", ""))
             book_title = tr_lower(item.get("Kitap", ""))
 
             score = 0
+
+            # -1. KOMUTAN/BIYOGRAFI OZEL PUANLAMASI
+            if is_commander_query:
+                # Kitap basliginda "komutan" veya "biyografi" varsa (+500)
+                if "komutan" in book_title or "biyografi" in book_title or "kumandan" in book_title:
+                    score += 500
+
+                # Metinde rutbe kelimeleri varsa (+300)
+                rank_found = False
+                for rank in rank_words:
+                    if rank in text:
+                        score += 300
+                        rank_found = True
+                        break
+
+                # Biyografik desen tespiti: (1881-1944) veya dogum/olum tarihleri (+200)
+                bio_pattern = re.search(r'\(\d{4}-\d{4}\)|\(\d{4}\s*-\s*\d{4}\)', text_original)
+                if bio_pattern:
+                    score += 200
+
+                # "dogdu", "vefat", "sehit" gibi biyografik kelimeler (+150)
+                bio_words = ["dogdu", "doğdu", "vefat", "sehit", "şehit", "hayatini kaybetti", "hayatını kaybetti"]
+                if any(bw in text for bw in bio_words):
+                    score += 150
 
             # 0. ISIM ESLESMESI - EN YUKSEK ONCELIK (+1000 puan)
             # Ayrica soruda gecen tum onemli kelimeleri dogrudan ara
